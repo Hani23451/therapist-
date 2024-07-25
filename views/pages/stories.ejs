@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stories</title>
+    <link href="/css/main.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-200 text-gray-900">
+    <%- include('../partials/Logo.ejs') %> <%- include('../partials/Loader.ejs')
+    %>
+    <div class="flex">
+      <%- include('../partials/SideBar.ejs') %>
+      <main class="flex-1 p-4 mt-40 sm:ml-96">
+        <h1 class="text-right text-2xl font-bold mb-6">Stories</h1>
+        <!-- Add Story Form -->
+        <section class="bg-white p-6 rounded-lg shadow-md">
+          <div class="flex justify-end">
+            <h2 class="text-xl bg-slate-100 p-2 rounded-md font-semibold mb-4">
+              Add a New Story
+            </h2>
+          </div>
+          <form action="/admin/add-stroy" method="POST" class="space-y-4">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700"
+                >Name</label
+              >
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="mt-1 block w-full p-2 border-2 border-gray-300 rounded-md shadow-sm"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="content"
+                class="block text-sm font-medium text-gray-700"
+                >Content</label
+              >
+              <textarea
+                id="content"
+                name="content"
+                rows="9"
+                class="mt-1 block w-full border-2 border-gray-300 rounded-md shadow-sm"
+                required
+              ></textarea>
+            </div>
+            <div>
+              <label
+                for="jewelCount"
+                class="block text-sm font-medium text-gray-700"
+                >Jewel Count</label
+              >
+              <input
+                type="number "
+                id="jewelCount"
+                name="jewelCount"
+                class="mt-1 block w-full p-1 border-2 border-gray-300 rounded-md shadow-sm"
+                required
+              />
+            </div>
+            <div>
+              <label
+                for="isPaid"
+                class="block text-sm font-medium text-gray-700"
+                >Is Paid?</label
+              >
+              <select
+                id="isPaid"
+                name="isPaid"
+                class="mt-1 p-2 block w-full border-2 border-gray-300 rounded-md shadow-sm"
+                required
+              >
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              class="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white"
+            >
+              Add Story
+            </button>
+          </form>
+        </section>
+        <section class="bg-white p-6 rounded-lg mt-8 shadow-md">
+          <div class="flex justify-center sm:justify-end">
+            <h2 class="bg-slate-100 p-2 rounded-md text-xl font-semibold mb-4">
+              Stories List
+            </h2>
+          </div>
+          <div class="flex justify-center items-center flex-wrap gap-6">
+            <% stories.forEach(story => { %>
+            <div class="bg-white rounded-lg shadow-md p-4 border-2 relative">
+              <div class="flex justify-end px-3 gap-3">
+                <form
+                  action="/admin/stories/delete/<%= story._id %>"
+                  method="POST"
+                  class=""
+                >
+                  <button
+                    type="submit"
+                    class="bg-red-500 text-white px-4 py-2 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </form>
+                <button
+                  onclick="showPopup('<%= story.name %>', `<%= story.content %>`)"
+                  class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-1 px-2 rounded"
+                >
+                  Show
+                </button>
+              </div>
+              <h3 class="text-xl font-semibold mb-2"><%= story.name %></h3>
+              <p class="text-gray-600 mb-2 break-words my-7">
+                <%= story.content.length > 100 ? story.content.slice(0, 100) +
+                '...' : story.content %>
+              </p>
+            </div>
+            <% }) %>
+          </div>
+        </section>
+      </main>
+      <div id="popup-modal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen">
+          <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+          </div>
+          <div
+            class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full p-4"
+          >
+            <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div class="sm:flex sm:items-start">
+                <div class="text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <h3
+                    id="popup-title"
+                    class="text-lg leading-6 break-words font-medium text-gray-900"
+                  ></h3>
+                  <div class="mt-2">
+                    <p
+                      id="popup-content"
+                      class="text-sm break-all text-gray-500"
+                    ></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <button
+                onclick="closePopup()"
+                type="button"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function showPopup(title, content) {
+        console.log(title, content);
+        document.getElementById("popup-title").innerText = title;
+        document.getElementById("popup-content").innerText = content;
+        document.getElementById("popup-modal").classList.remove("hidden");
+      }
+
+      function closePopup() {
+        document.getElementById("popup-modal").classList.add("hidden");
+      }
+    </script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

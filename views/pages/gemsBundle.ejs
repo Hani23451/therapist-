@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gems</title>
+    <link href="/css/main.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+    <style>
+      /* Swiper Popup styles */
+      #popupSwiper {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        width: 80%;
+        max-width: 400px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .swiper-container {
+        height: auto;
+        background: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .swiper-slide {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+      }
+
+      .popup-close-btn {
+        background: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .popup-close-btn:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-200 text-gray-900">
+    <%- include('../partials/Logo.ejs') %> <%- include('../partials/Loader.ejs')
+    %>
+    <div class="flex">
+      <%- include('../partials/SideBar.ejs') %>
+      <main class="flex-1 p-4 mt-40 sm:ml-96">
+        <section class="bg-gray-100">
+          <div class="flex justify-end">
+            <h2 class="bg-gray-800 text-xl font-mono text-white p-3">
+              Add Gems Bundle
+            </h2>
+          </div>
+          <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+            <div
+              class="rounded-lg bg-white p-8 shadow-lg lg:col-span-3 lg:p-12"
+            >
+              <form id="gemsForm" class="space-y-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label class="sr-only" for="name">Name</label>
+                    <input
+                      class="w-full border-2 rounded-lg border-gray-200 p-3 text-sm"
+                      placeholder="Name of Gems Bundle"
+                      type="text"
+                      name="name"
+                      id="name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label class="sr-only" for="price">Price</label>
+                    <input
+                      class="w-full border-2 rounded-lg border-gray-200 p-3 text-sm"
+                      placeholder="Price of Gems Bundle"
+                      type="number"
+                      name="price"
+                      id="price"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label class="sr-only" for="count">Count Of Gems</label>
+                  <input
+                    class="w-full rounded-lg border-2 border-gray-200 p-3 text-sm"
+                    placeholder="Count"
+                    type="number"
+                    name="count"
+                    id="count"
+                    required
+                  />
+                </div>
+                <div class="mt-4">
+                  <button
+                    type="submit"
+                    class="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"
+                  >
+                    Add Gems Bundle
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+        <!-- Swiper Popup -->
+        <div id="popupSwiper" class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <p
+                id="popupMessage"
+                class="text-gray-900 font-mono text-xl capitalize p-3"
+              ></p>
+              <button id="closePopupButton" class="popup-close-btn">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section class="bg-gray-100 py-8">
+          <div class="container mx-auto px-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Gems Bundles</h2>
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              <% gemsBundles.forEach(bundle => { %>
+              <div
+                class="bg-white rounded-lg relative shadow-md overflow-hidden"
+              >
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXJEDj3uJ4hwBN7bAjNDjMHfiR31Gna099ww&s"
+                  alt="<%= bundle.name %>"
+                  class="w-full h-40 object-cover"
+                />
+                <div class="p-4">
+                  <h3
+                    class="text-xl font-semibold bg-indigo-300 text-center capitalize p-2 text-white"
+                  >
+                    <%= bundle.name %>
+                  </h3>
+                  <p class="text-gray-600">Price: $<%= bundle.price %></p>
+                  <p class="text-gray-600">Count: <%= bundle.count %></p>
+                </div>
+                <button
+                  data-id="<%= bundle._id %>"
+                  class="absolute bottom-0 right-0 m-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+                  onclick="deleteBundle(event)"
+                >
+                  Delete
+                </button>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+      // Initialize Swiper
+      const swiper = new Swiper("#popupSwiper", {
+        slidesPerView: 5,
+        effect: "fade",
+        autoplay: {
+          delay: 5000,
+          disableOnInteraction: false,
+        },
+      });
+
+      // Function to show the popup
+      function showPopup(message) {
+        document.getElementById("popupMessage").textContent = message;
+        document.getElementById("popupSwiper").style.display = "block";
+        swiper.update();
+      }
+
+      // Function to hide the popup
+      function hidePopup() {
+        document.getElementById("popupSwiper").style.display = "none";
+        window.location.reload();
+      }
+
+      function deleteBundle(event) {
+        const button = event.target;
+        const id = button.getAttribute("data-id");
+        fetch(`/admin/delete-gems/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Remove card from DOM
+              window.location.reload();
+            } else {
+              alert("Failed to delete the bundle.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      // Close popup button
+      document
+        .getElementById("closePopupButton")
+        .addEventListener("click", hidePopup);
+
+      // Handle form submission with AJAX
+      document
+        .getElementById("gemsForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData.entries());
+
+          fetch("/admin/create-gems", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                showPopup(data.message);
+                setTimeout(() => {
+                  hidePopup();
+                  // Clear the form inputs
+                  document.getElementById("gemsForm").reset();
+                  window.location.reload();
+                }, 2000); // Hide popup after 5 seconds
+              } else {
+                alert(data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    </script>
+  </body>
+</html>

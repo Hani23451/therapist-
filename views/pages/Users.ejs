@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>home</title>
+    <link href="/css/main.css" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-200 text-gray-900">
+    <%- include('../partials/Logo.ejs') %>
+    <%- include('../partials//Loader.ejs') %>
+    <div class="flex">
+      <%- include('../partials/SideBar.ejs') %>
+      <main class="flex-1 p-2 mt-40 sm:ml-96">
+        <div class="w-full p-5 flex justify-center sm:justify-end">
+          <h2 class="bg-teal-700 text-2xl font-mono text-white p-2 rounded-md">
+            All Users
+          </h2>
+        </div>
+        <!--
+  Heads up! 👋
+
+  This component comes with some `rtl` classes. Please remove them if they are not needed in your project.
+-->
+
+        <div
+          class="overflow-x-auto w-[390px] flex items-center justify-center sm:w-full"
+        >
+          <table
+            class="w-full shadow-md rounded-md divide-y-2 divide-gray-200 bg-white text-sm"
+          >
+            <thead class="ltr:text-left rtl:text-right">
+              <tr>
+                <th
+                  class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                >
+                  Name
+                </th>
+                <th
+                  class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                >
+                  Phone
+                </th>
+                <th
+                  class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                >
+                  Email
+                </th>
+                <th
+                  class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                >
+                  Gender
+                </th>
+                <th
+                  class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                >
+                  Age
+                </th>
+                <th
+                  class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"
+                >
+                  Date of Join
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-200">
+              <% users.forEach(user => { %>
+              <tr class="ml-2">
+                <td
+                  class="whitespace-nowrap font-semibold text-center px-4 bg-gray-100 py-2"
+                >
+                  <%= user.fullname %>
+                </td>
+                <td
+                  class="whitespace-nowrap font-semibold text-center bg-gray-100 px-4 py-2"
+                >
+                  <%= user.phone %>
+                </td>
+                <td
+                  class="whitespace-nowrap font-semibold text-center bg-gray-100 px-4 py-2"
+                >
+                  <%= user.email %>
+                </td>
+                <td
+                  class="whitespace-nowrap font-semibold text-center px-4 bg-gray-100 py-2"
+                >
+                  <%= user.sex %>
+                </td>
+                <td
+                  class="whitespace-nowrap font-semibold text-center px-4 bg-gray-100 py-2"
+                >
+                  <%= user.age %>
+                </td>
+                <td
+                  class="whitespace-nowrap px-4 text-center bg-red-400 text-slate-800 font-bold py-2"
+                >
+                  <%= new Date(user.createdAt).toLocaleDateString() %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
