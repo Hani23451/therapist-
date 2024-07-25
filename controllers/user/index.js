@@ -281,4 +281,41 @@ exports.getUserData = expressAsyncHandler(async (req, res) => {
       .status(500)
       .json({ success: false, message: "Server Error", error: error.message });
   }
+}); 
+ 
+
+exports.editProfile = expressAsyncHandler(async (req, res) => {
+  try {
+
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+
+    const { fullname, email, phone, sex, age, password } = req.body;
+
+    // Update user details
+    if (fullname) user.fullname = fullname;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (sex) user.sex = sex;
+    if (age) user.age = age;
+
+    // Hash the new password if it's provided
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    // Save the updated user
+    await user.save();
+
+    // Return the updated user data
+    res.status(200).json({ success: true, user });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server Error', error: error.message });
+  }
 });

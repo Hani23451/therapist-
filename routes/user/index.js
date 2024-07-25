@@ -12,6 +12,7 @@ const {
   addExperience,
   getPublishedExperiences,
   getUserData,
+  editProfile
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -715,6 +716,28 @@ router.get("/experiences", getPublishedExperiences);
  *       - Get User
  
  */
-router.get("/get-user", verifyToken, getUserData);
+router.get("/get-user", verifyToken, getUserData); 
+
+/**
+ * @swagger
+ * /api/user/edit-profile:
+ *   post:
+ *     summary: edit  user data
+ *     description: Endpoint to retrieve all experiences with the status "published". Useful for displaying or managing published experiences.
+ *     tags:
+ *       - Get User 
+ *     responses:
+ *       200:
+ *         description: Successfully edit user data 
+ * fullname: Name of the user
+ * email: Email of the user
+ * phone: Number of the user
+ * password: password of the user
+ * sex: sex of the user
+ * age: age of the user
+ *         
+ 
+ */
+router.post('/edit-profile' ,verifyToken,editProfile)
 router.post('/click' ,sendLoveClick);
 module.exports = router;
