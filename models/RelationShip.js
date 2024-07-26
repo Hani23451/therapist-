@@ -11,6 +11,14 @@ const RelationshipSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  userName1: {
+    type: String,
+    required: true
+  },
+  userName2: {
+    type: String,
+    required: true
+  },
   linkedWord: {
     type: String,
     required: true

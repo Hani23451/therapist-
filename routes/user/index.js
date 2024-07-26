@@ -12,7 +12,10 @@ const {
   addExperience,
   getPublishedExperiences,
   getUserData,
-  editProfile
+  editProfile,
+  getUserNotifications ,
+  markNotificationAsRead ,
+  markAllNotificationsAsRead
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -738,6 +741,221 @@ router.get("/get-user", verifyToken, getUserData);
  *         
  
  */
-router.post('/edit-profile' ,verifyToken,editProfile)
-router.post('/click' ,sendLoveClick);
+router.post('/edit-profile' ,verifyToken,editProfile) 
+
+/**
+ * @swagger
+ * /api/user/send-message:
+ *   post:
+ *     summary: إرسال إشعار ضغطة شوق
+ *     description: يرسل إشعار ضغطة شوق من المستخدم الحالي إلى شريكه ويخلق إشعارات لكل من المرسل والمستلم.
+ *     tags:
+ *       - Notification
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               body:
+ *                 type: string
+ *                 description: محتوى اختياري للإشعار.
+ *                 example: "عناق دافئ"
+ *     responses:
+ *       '200':
+ *         description: تم إرسال إشعار ضغطة الشوق بنجاح وإنشاء إشعارات لكل من المرسل والمستلم
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: حالة النجاح.
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   description: رسالة تأكيد باسم الشريك.
+ *                   example: "تم إرسال ضغطة الشوق بنجاح إلى Jane Smith"
+ *                 response:
+ *                   type: object
+ *                   description: كائن استجابة Firebase.
+ *       '400':
+ *         description: طلب غير صحيح - الحقول المطلوبة مفقودة أو بيانات غير صالحة
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: حالة النجاح.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: رسالة الخطأ.
+ *                   example: "طلب غير صحيح"
+ *       '404':
+ *         description: المستخدم أو الشريك غير موجود
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: حالة النجاح.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: رسالة الخطأ.
+ *                   example: "لم يتم العثور على المستخدم أو الشريك"
+ *       '500':
+ *         description: خطأ في الخادم الداخلي
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: حالة النجاح.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: رسالة الخطأ.
+ *                   example: "حدث خطأ في الخادم."
+ *     components:
+ *       securitySchemes:
+ *         bearerAuth:
+ *           type: http
+ *           scheme: bearer
+ *           bearerFormat: JWT
+ */
+router.post('/send-message' , verifyToken,sendLoveClick); 
+
+/**
+ * @swagger
+ * /api/user/get-user-notifications:
+ *   get:
+ *     summary: Retrieve user notifications and count unread messages
+ *     description: Fetches all notifications for the currently logged-in user and provides a count of unread messages. Requires authentication via token.
+ *     tags:
+ *       - Notification
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved notifications and unread message count
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Success status.
+ *                   example: true
+ *                 notifications:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         description: Notification ID.
+ *                         example: "60c72b2f4f1a2c001f8e4b1f"
+ *                       type:
+ *                         type: string
+ *                         description: Type of notification.
+ *                         example: "sendLove"
+ *                       message:
+ *                         type: string
+ *                         description: Content of the notification.
+ *                         example: "أنت أرسلت ضغطة شوق إلى Jane Smith"
+ *                       isRead:
+ *                         type: boolean
+ *                         description: Read status of the notification.
+ *                         example: false
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Date and time when the notification was created.
+ *                         example: "2024-07-21T15:21:00Z"
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Date and time when the notification was last updated.
+ *                         example: "2024-07-21T15:21:00Z"
+ *                 unreadCount:
+ *                   type: integer
+ *                   description: Number of unread notifications.
+ *                   example: 5
+ *       '401':
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Success status.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: Error message.
+ *                   example: "Unauthorized access. Token is missing or invalid."
+ *       '500':
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Success status.
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   description: Error message.
+ *                   example: "Server error occurred."
+ *     components:
+ *       securitySchemes:
+ *         bearerAuth:
+ *           type: http
+ *           scheme: bearer
+ *           bearerFormat: JWT
+ */
+
+router.get('/get-user-notifications', verifyToken, getUserNotifications);
+ 
+
+/**
+ * @swagger
+ * /api/user/mark-read/:notificationId:
+ *   patch:
+ *     summary: Mark notification as read
+ *     description: Fetches all notifications for the currently logged-in user and provides a count of unread messages. Requires authentication via token.
+ *     tags:
+ *       - Notification
+ 
+ */
+router.patch('mark-read/:notificationId', verifyToken, markNotificationAsRead);
+
+
+/**
+ * @swagger
+ * /api/user/mark-all-read:
+ *   post:
+ *     summary: Mark all notification as read
+ *     description: Fetches all notifications for the currently logged-in user and provides a count of unread messages. Requires authentication via token.
+ *     tags:
+ *       - Notification
+ 
+ */
+router.post('/mark-all-read', verifyToken, markAllNotificationsAsRead); 
 module.exports = router;

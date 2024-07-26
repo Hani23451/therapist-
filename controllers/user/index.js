@@ -8,6 +8,7 @@ const User = require("../../models/User");
 const Relationship = require("../../models/RelationShip");
 const admin = require("../../config/FireBase");
 const Experience = require("../../models/Experience");
+const Notification = require("../../models/Notification");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -111,7 +112,7 @@ exports.linkCouples = expressAsyncHandler(async (req, res, next) => {
 
       await user.save();
       await matchedUser.save();
-
+      console.log(user);
       return res.status(200).json({
         success: true,
         message: "linked successfully",
@@ -144,7 +145,7 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
 
     // Find the partner
     const partner = user.partner;
-
+    partnerUser = await User.findById(partner._id);
     if (!partner) {
       return res
         .status(404)
@@ -160,7 +161,7 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
     });
 
     if (existingRelationship) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "Relationship already exists between the users",
       });
@@ -170,6 +171,8 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
     const relationship = await Relationship.create({
       user1: userId,
       user2: partner._id,
+      userName1: user.fullname,
+      userName2: partnerUser.fullname,
       engagementDate,
       marriageDate,
       proposalDate,
@@ -197,32 +200,78 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
 });
 
 exports.sendLoveClick = expressAsyncHandler(async (req, res, next) => {
-  const { token, title, body } = req.body;
-// بب
-  const message = {
-    // Optional: you can send any data
-    notification: {
-      title: "love click",
-      body: "mustafa eisa has sent u a message",
-    },
-    topic: "66a23e869d970c131d734099",
-  };
-
   try {
-    const response = await admin.messaging().send(message); 
+    const { body } = req.body;
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const partnerId = user.partner;
+    if (!partnerId) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No partner found for the user" });
+    }
+    const partnerUser = await User.findById(partnerId);
+    if (!partnerUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Partner user not found" });
+    }
+
+    const relationship = await Relationship.findOne({
+      $or: [
+        { user1: req.user.userId, user2: partnerId },
+        { user1: partnerId, user2: req.user.userId },
+      ],
+    });
+
+    if (!relationship) {
+      return res.json({ status: 404, message: "Relationship not found" });
+    }
+
+    // Create notification for the sender
+    await Notification.create({
+      user: req.user.userId,
+      type: "sendLove",
+      message: `${partnerUser.fullname} أنت أرسلت ضغطة شوق إلى `,
+    });
+
+    // Create notification for the receiver
+    await Notification.create({
+      user: partnerId,
+      type: "sentLove",
+      message: ` أرسل لك ضغطة شوق ${user.fullname}`,
+    });
+
+    const message = {
+      notification: {
+        title: `${user.fullname} ❤️ أرسل لك ضغطة شوق`,
+        body: "بحبك ودايب في حبك",
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s",
+      },
+      topic: `${partnerId}`,
+    };
+
+    const response = await admin.messaging().send(message);
+
     console.log(response);
     res.status(200).json({
       success: true,
-      message: "Notification sent successfully",
+      message: ` ${partnerUser.fullname} تم ارسال ضغطه الشوق بنجاح الي `,
       response,
     });
-  } catch (error) {   
-     console.log(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Error sending notification", error });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
+
 exports.addExperience = expressAsyncHandler(async (req, res) => {
   try {
     const { name, content, jewelCount, isPaid, userName, userEmail } = req.body;
@@ -281,18 +330,17 @@ exports.getUserData = expressAsyncHandler(async (req, res) => {
       .status(500)
       .json({ success: false, message: "Server Error", error: error.message });
   }
-}); 
- 
+});
 
 exports.editProfile = expressAsyncHandler(async (req, res) => {
   try {
-
     const user = await User.findById(req.user.userId);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-
 
     const { fullname, email, phone, sex, age, password } = req.body;
 
@@ -314,8 +362,77 @@ exports.editProfile = expressAsyncHandler(async (req, res) => {
 
     // Return the updated user data
     res.status(200).json({ success: true, user });
-
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server Error', error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server Error", error: error.message });
+  }
+});
+
+exports.getUserNotifications = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    // Fetch all notifications for the user
+    const notifications = await Notification.find({ user: userId }).sort({
+      createdAt: -1,
+    });
+
+    // Count unread notifications
+    const unreadCount = await Notification.countDocuments({
+      user: userId,
+      isRead: false,
+    });
+
+    res.status(200).json({
+      success: true,
+      notifications,
+      unreadCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+}); 
+exports.markNotificationAsRead = expressAsyncHandler(async (req, res) => {
+  try {
+    const { notificationId } = req.params;
+
+    // Find and update the specific notification
+    const notification = await Notification.findOneAndUpdate(
+      { _id: notificationId, user: req.user.userId },
+      { isRead: true },
+      { new: true }
+    );
+
+    if (!notification) {
+      return res.status(404).json({ success: false, message: "Notification not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Notification marked as read",
+      notification,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+exports.markAllNotificationsAsRead = expressAsyncHandler(async (req, res) => {
+  try {
+    // Update all notifications for the user to read
+    const result = await Notification.updateMany(
+      { user: req.user.userId, isRead: false },
+      { isRead: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: `Marked ${result.modifiedCount} notifications as read`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
 });
