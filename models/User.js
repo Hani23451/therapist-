@@ -32,6 +32,7 @@ const UserSchema = new mongoose.Schema(
     relationshipStatus: {
       type: String,
       enum: ["single", "pending", "accepted", "completed"],
+      default: "single",
     },
     partner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,8 +41,9 @@ const UserSchema = new mongoose.Schema(
     linkedWord: {
       type: String,
     },
-    fcmToken: {
-      type: String,
+    gemsCount: {
+      type: Number,
+      default: 0,
     },
   },
   {
