@@ -9,6 +9,7 @@ const Relationship = require("../../models/RelationShip");
 const admin = require("../../config/FireBase");
 const Experience = require("../../models/Experience");
 const Notification = require("../../models/Notification");
+const moment = require("moment");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -134,6 +135,16 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
     const userId = req.user.userId;
     const { engagementDate, marriageDate, proposalDate } = req.body;
 
+    const formattedEngagementDate = moment(engagementDate, "DD-MM-YYYY").format(
+      "YYYY-MM-DD"
+    );
+    const formattedMarriageDate = moment(marriageDate, "DD-MM-YYYY").format(
+      "YYYY-MM-DD"
+    );
+    const formattedProposalDate = moment(proposalDate, "DD-MM-YYYY").format(
+      "YYYY-MM-DD"
+    );
+
     // Find the current user
     const user = await User.findById(userId).populate("partner");
 
@@ -173,9 +184,9 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
       user2: partner._id,
       userName1: user.fullname,
       userName2: partnerUser.fullname,
-      engagementDate,
-      marriageDate,
-      proposalDate,
+      engagementDate: formattedEngagementDate,
+      marriageDate: formattedMarriageDate,
+      proposalDate: formattedProposalDate,
       linkedWord: user.linkedWord,
     });
 
@@ -393,7 +404,7 @@ exports.getUserNotifications = expressAsyncHandler(async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
-}); 
+});
 exports.markNotificationAsRead = expressAsyncHandler(async (req, res) => {
   try {
     const { notificationId } = req.params;
@@ -406,7 +417,9 @@ exports.markNotificationAsRead = expressAsyncHandler(async (req, res) => {
     );
 
     if (!notification) {
-      return res.status(404).json({ success: false, message: "Notification not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Notification not found" });
     }
 
     res.status(200).json({
