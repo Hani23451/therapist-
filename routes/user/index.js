@@ -944,7 +944,7 @@ router.get('/get-user-notifications', verifyToken, getUserNotifications);
  *       - Notification
  
  */
-router.patch('mark-read/:notificationId', verifyToken, markNotificationAsRead);
+router.post('/mark-read/:notificationId', verifyToken, markNotificationAsRead);
 
 
 /**
