@@ -19,10 +19,7 @@ const RelationshipSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  linkedWord: {
-    type: String,
-    required: true
-  },
+
   engagementDate: {
     type: Date
   },

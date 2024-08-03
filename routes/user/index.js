@@ -13,9 +13,10 @@ const {
   getPublishedExperiences,
   getUserData,
   editProfile,
-  getUserNotifications ,
-  markNotificationAsRead ,
-  markAllNotificationsAsRead
+  getUserNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  confirmConnection,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -719,7 +720,7 @@ router.get("/experiences", getPublishedExperiences);
  *       - Get User
  
  */
-router.get("/get-user", verifyToken, getUserData); 
+router.get("/get-user", verifyToken, getUserData);
 
 /**
  * @swagger
@@ -741,7 +742,7 @@ router.get("/get-user", verifyToken, getUserData);
  *         
  
  */
-router.post('/edit-profile' ,verifyToken,editProfile) 
+router.post("/edit-profile", verifyToken, editProfile);
 
 /**
  * @swagger
@@ -834,8 +835,8 @@ router.post('/edit-profile' ,verifyToken,editProfile)
  *           scheme: bearer
  *           bearerFormat: JWT
  */
-router.post('/send-message' , verifyToken,sendLoveClick); 
-
+router.post("/send-message", verifyToken, sendLoveClick);
+router.get("/confirm-connection", confirmConnection);
 /**
  * @swagger
  * /api/user/get-user-notifications:
@@ -931,8 +932,7 @@ router.post('/send-message' , verifyToken,sendLoveClick);
  *           bearerFormat: JWT
  */
 
-router.get('/get-user-notifications', verifyToken, getUserNotifications);
- 
+router.get("/get-user-notifications", verifyToken, getUserNotifications);
 
 /**
  * @swagger
@@ -944,8 +944,7 @@ router.get('/get-user-notifications', verifyToken, getUserNotifications);
  *       - Notification
  
  */
-router.post('/mark-read/:notificationId', verifyToken, markNotificationAsRead);
-
+router.post("/mark-read/:notificationId", verifyToken, markNotificationAsRead);
 
 /**
  * @swagger
@@ -957,5 +956,5 @@ router.post('/mark-read/:notificationId', verifyToken, markNotificationAsRead);
  *       - Notification
  
  */
-router.post('/mark-all-read', verifyToken, markAllNotificationsAsRead); 
+router.post("/mark-all-read", verifyToken, markAllNotificationsAsRead);
 module.exports = router;

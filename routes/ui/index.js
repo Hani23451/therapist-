@@ -7,6 +7,7 @@ const Complaints = require("../../models/Complaints");
 const Stories = require("../../models/Stories");
 const Experience = require("../../models/Experience");
 const authAdminValidation = require("../../middlewares/adminValidation");
+const RelationShip = require("../../models/RelationShip");
 router.get("/", authAdminValidation, (req, res) => {
   res.render("pages/home", { name: "Chris Martin" });
 });
@@ -83,5 +84,33 @@ router.get("/login", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+router.get("/login", async (req, res) => {
+  try {
+    // Fetch users from the database
+    res.render("pages/login"); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+router.get("/analytics", async (req, res) => {
+  try {
+    // Fetch users from the database
+    res.render("pages/analytics"); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+router.get("/games", async (req, res) => {
+  try {
+    // Fetch users from the database
+    res.render("pages/Games"); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+
 
 module.exports = router;

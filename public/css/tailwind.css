@@ -4,6 +4,18 @@
 @tailwind utilities;
 
 .active {
-  color: white !important;
-  background-color: #272733;
+  color: rgb(217, 158, 158) !important;
+  background-color: #222;
+}
+.modal-content {
+  background-color: #444; /* Dark background for the modal */
+  color: #fff; /* White text for contrast */
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #454d55;   background-color: #444; }
+
+.modal-body {
+  background-color: #444; ; /* Ensure consistent background color */
 }

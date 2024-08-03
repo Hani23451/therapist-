@@ -4,6 +4,10 @@ const Questions = require("../../models/Questions");
 const Settings = require("../../models/Settings");
 const Stories = require("../../models/Stories");
 const Experience = require("../../models/Experience");
+const PersonAnalytics = require("../../models/PersonAnalytics");
+const cloudinary = require("../../config/Cloudinary");
+const sharp = require("sharp");
+const bufferToStream = require("../../utils/ImageStream");
 exports.AdminLogin = asyncHandler(async (req, res, next) => {
   console.log(req.body);
   const { email, password } = req.body;
@@ -197,4 +201,27 @@ exports.updateExperienceStatus = asyncHandler(async (req, res) => {
 
   await experience.save();
   res.redirect("/experiences");
+});
+
+exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+    const stream =await cloudinary.uploader.upload_stream(
+      { folder: "analytics" },
+      (error, result) => {
+        if (error) return console.error(error);
+        return res.json({ URL: result.secure_url });
+      }
+    );
+    bufferToStream(data).pipe(stream);
+  } catch (error) {
+    console.error("Error in creatingPersonAnalytics:", error);
+    res
+      .status(500)
+      .json({ message: "Error uploading file", error: error.message });
+  }
 });

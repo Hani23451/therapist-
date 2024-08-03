@@ -10,6 +10,9 @@ const admin = require("../../config/FireBase");
 const Experience = require("../../models/Experience");
 const Notification = require("../../models/Notification");
 const moment = require("moment");
+
+const nodemailer = require("nodemailer");
+
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -71,59 +74,180 @@ exports.getStories = expressAsyncHandler(async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
-});
+}); // Adjust the path as needed
 
-exports.linkCouples = expressAsyncHandler(async (req, res, next) => {
+exports.linkCouples = expressAsyncHandler(async (req, res) => {
   try {
     const userId = req.user.userId;
-    console.log(req.user); // Get user ID from the verified token
-    const linkedWord = req.body.linkedWord;
+    const email = req.body.email; // Email of the user to link with
 
-    if (!linkedWord) {
+    if (!email) {
       return res
         .status(400)
-        .json({ success: false, message: "linkedWord is required" });
+        .json({ success: false, message: "Email is required" });
     }
 
-    // Update the current user with the linkedWord and set relationshipStatus to "pending"
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { linkedWord, relationshipStatus: "pending" },
-      { new: true }
-    );
-
+    const user = await User.findById(userId);
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    console.log(user);
-    const matchedUser = await User.findOne({
-      linkedWord,
-      _id: { $ne: userId },
-    });
+
+    // Find the user with the given email
+    const matchedUser = await User.findOne({ email, _id: { $ne: userId } });
 
     if (matchedUser) {
-      // Update both users to reference each other and set relationshipStatus to "accepted"
-      user.relationshipStatus = "accepted";
-      user.partner = matchedUser._id;
-
-      matchedUser.relationshipStatus = "accepted";
-      matchedUser.partner = user._id;
-
+      // Set current user status to "pending"
+      user.linkedWord = email;
+      user.relationshipStatus = "pending";
       await user.save();
-      await matchedUser.save();
-      console.log(user);
-      return res.status(200).json({
-        success: true,
-        message: "linked successfully",
-      });
+
+      async function sendOTP() {
+        let transporter = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false,
+          auth: {
+            user: "mostafaisa208@gmail.com",
+            pass: "bqzl uyxy lvdu bfbk",
+          },
+        });
+
+        let info = await transporter.sendMail({
+          from: "therapist@gmail.com",
+          to: matchedUser.email,
+          subject: "الارتباط بشريك علي تطبيق Therapist",
+
+          html: `
+        <html>
+    <head>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          color: #333;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          max-width: 600px;
+          margin: auto;
+          background: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+          background-color: #FFC107; /* Yellow color */
+          color: #fff;
+          padding: 10px;
+          text-align: center;
+          border-radius: 8px 8px 0 0;
+        }
+        .content {
+          padding: 20px;
+        }
+        .content p {
+          font-size: 16px;
+          line-height: 1.5;
+        }
+        .button {
+          display: inline-block;
+          font-size: 16px;
+          color: #fff;
+          background-color: #FFC107; /* Yellow color */
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
+          margin-top: 20px;
+        }
+        .footer {
+          text-align: center;
+          padding: 10px;
+          font-size: 14px;
+          color: #777;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>Connection Request</h1>
+        </div>
+        <div class="content">
+          <p>مرحباً،</p>
+          <p>قام المستخدم ${user.fullname} بطلب الارتباط بك. يرجى <a class="button" href="https://hani-server-3qfo.onrender.com/api/user/confirm-connection?userId=${userId}&matchedUserId=${matchedUser._id}">الضغط هنا</a> لقبول   الارتباط.</p>
+        </div>
+        <div class="footer">
+          <p>شكراً لك!</p>
+        </div>
+      </div>
+    </body>
+  </html>
+          `,
+        });
+
+        console.log("Message sent: %s", info.messageId);
+      }
+
+      sendOTP()
+        .then(async (result) => {
+          console.log("Confirmation email sent: %s", result);
+          return res.status(200).json({
+            success: true,
+            message: "طلب الارتباط تم ارساله الي الطرف الاخر بانتظار التاكيد",
+          });
+        })
+        .catch((err) => console.error(err));
     } else {
-      return res.status(200).json({
-        success: true,
-        message: "Account updated, waiting for a partner entering the word",
+      // No matched user found
+      return res.status(404).json({
+        success: false,
+        message: "User with the provided email not found",
       });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+exports.confirmConnection = expressAsyncHandler(async (req, res) => {
+  try {
+    const { userId, matchedUserId } = req.query;
+
+    if (!userId || !matchedUserId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid request" });
+    }
+
+    const user = await User.findById(userId);
+    const matchedUser = await User.findById(matchedUserId);
+
+    if (!user || !matchedUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User(s) not found" });
+    }
+
+    // Update both users to accept the connection
+    user.relationshipStatus = "accepted";
+    user.partner = matchedUser._id;
+
+    matchedUser.relationshipStatus = "accepted";
+    matchedUser.partner = user._id;
+
+    await user.save();
+    await matchedUser.save();
+
+    // Render the EJS template
+    return res.render("pages/SuccessConnection.ejs", {
+      user1: user,
+      user2: matchedUser,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server Error" });
@@ -187,7 +311,6 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
       engagementDate: formattedEngagementDate,
       marriageDate: formattedMarriageDate,
       proposalDate: formattedProposalDate,
-      linkedWord: user.linkedWord,
     });
 
     // Update both users' relationship statuses
@@ -262,7 +385,7 @@ exports.sendLoveClick = expressAsyncHandler(async (req, res, next) => {
     const message = {
       notification: {
         title: `${user.fullname} ❤️ أرسل لك ضغطة شوق`,
-        body: "بحبك ودايب في حبك",
+        body: "اشتقت اليك",
         imageUrl:
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s",
       },
