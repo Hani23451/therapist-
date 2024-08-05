@@ -76,24 +76,134 @@
                       required
                     ></textarea>
                   </div>
+                  <div class="grid gap-6 mb-6 md:grid-cols-2">
+                    <div>
+                      <label
+                        for="task1"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Task 1</label
+                      >
+                      <input
+                        type="text"
+                        id="task1"
+                        name="task1"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Task 1"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="task2"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Task 2</label
+                      >
+                      <input
+                        type="text"
+                        id="task2"
+                        name="task2"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Task 2"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="task3"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Task 3</label
+                      >
+                      <input
+                        type="text"
+                        id="task3"
+                        name="task3"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Task 3"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="task4"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Task 4</label
+                      >
+                      <input
+                        type="text"
+                        id="task4"
+                        name="task4"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Task 4"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="task5"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Task 5</label
+                      >
+                      <input
+                        type="text"
+                        id="task5"
+                        name="task5"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Task 5"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="task6"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Task 6</label
+                      >
+                      <input
+                        type="text"
+                        id="task6"
+                        name="task6"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Task 6"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div class="w-full bg-gray-50 p-4">
                     <label
-                      for="image"
+                      for="video"
                       class="block text-gray-700 font-semibold mb-2"
-                      >Image (optional)</label
+                      >Video (optional)</label
                     >
                     <div class="flex flex-col">
                       <input
                         type="file"
-                        id="image"
-                        name="image"
+                        id="video"
+                        name="video"
+                        accept="video/*"
                         class="w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       <p
-                        class="bg-slate-200 mt-1 text-center font-mono  p-2 rounded-md text-slate-500 capitalize"
+                        id="file-name"
+                        class="bg-slate-200 mt-1 text-center font-mono p-2 rounded-md text-slate-500 capitalize"
                       >
-                        Upload an image
+                        No file chosen
                       </p>
+                      <div id="progress-container" class="hidden mt-2">
+                        <p id="progress-text" class="text-gray-700">
+                          Reading: 0%
+                        </p>
+                        <div
+                          id="progress-bar"
+                          class="w-full bg-gray-200 h-2 rounded-md overflow-hidden"
+                        >
+                          <div
+                            id="progress"
+                            class="bg-blue-500 h-full"
+                            style="width: 0%"
+                          ></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -113,6 +223,42 @@
             </div>
           </div>
         </div>
+        <div
+          class="modal fade"
+          id="successModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="successModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span class="text-white" aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Person Analytic Have been Added Successfully
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -120,13 +266,61 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="/js/main.js"></script>
     <script>
-      // Update the file input label with the selected file name
-      document.getElementById("image").addEventListener("change", function (e) {
-        var fileName = e.target.files[0]
-          ? e.target.files[0].name
-          : "Choose file";
-        var nextSibling = e.target.nextElementSibling;
-        nextSibling.innerText = fileName;
+      document.getElementById("video").addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          // Display the file name
+          document.getElementById("file-name").innerText = file.name;
+
+          // Show the progress container
+          document
+            .getElementById("progress-container")
+            .classList.remove("hidden");
+
+          // Create a FileReader to read the file
+          const reader = new FileReader();
+
+          // Update the progress bar as the file is read
+          reader.onprogress = function (e) {
+            if (e.lengthComputable) {
+              const percent = Math.round((e.loaded / e.total) * 100);
+              document.getElementById("progress").style.width = percent *10 + "%";
+              document.getElementById(
+                "progress-text"
+              ).innerText = `Reading: ${percent}%`;
+            }
+          };
+
+          // When the file is fully read
+          reader.onload = function () {
+            document.getElementById("progress-text").innerText =
+              "Reading complete!";
+          };
+
+          // When an error occurs
+          reader.onerror = function () {
+            document.getElementById("progress-text").innerText =
+              "Error reading file.";
+          };
+
+          // Read the file as an ArrayBuffer (or any other format you need)
+          reader.readAsArrayBuffer(file);
+        } else {
+          document.getElementById("file-name").innerText = "No file chosen";
+          document.getElementById("progress-container").classList.add("hidden");
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Ensure that PersonAnalytic has a default value if not passed
+        const PersonAnalytic =
+          '<%= typeof PersonAnalytic !== "undefined" ? PersonAnalytic : "false" %>';
+        if (PersonAnalytic === "true") {
+          const successModal = new bootstrap.Modal(
+            document.getElementById("successModal")
+          );
+          successModal.show();
+        }
       });
     </script>
   </body>

@@ -27,7 +27,7 @@ router.post("/add-stroy", createStory);
 router.post("/add-experience", addExperience);
 router.post(
   "/add-person-analytics",
-  upload.single("image"),
+  upload.single("video"),
   creatingPersonAnalytics
 );
 router.post("/create-question", createQuestion);

@@ -2,20 +2,24 @@
 const mongoose = require('mongoose');
 
 const personAnalyticsSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-        required: true,
-    },
-    image: {
-        type: String, // URL or path to the image
-        default: null,
-    }
+  title: {
+      type: String,
+      required: true,
+  },
+  description: {
+      type: String,
+      required: true,
+  },
+  video: {
+      type: String, // URL or path to the video
+      default: null,
+  },
+  tasks: {
+      type: [String], // Array of strings for tasks
+      default: [],
+  }
 }, {
-    timestamps: true,
+  timestamps: true,
 });
 
 const PersonAnalytics = mongoose.model('PersonAnalytics', personAnalyticsSchema);

@@ -10,6 +10,7 @@ const admin = require("../../config/FireBase");
 const Experience = require("../../models/Experience");
 const Notification = require("../../models/Notification");
 const moment = require("moment");
+const PersonAnalytics = require("../../models/PersonAnalytics");
 
 const nodemailer = require("nodemailer");
 
@@ -567,6 +568,17 @@ exports.markAllNotificationsAsRead = expressAsyncHandler(async (req, res) => {
       success: true,
       message: `Marked ${result.modifiedCount} notifications as read`,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+
+exports.getPersonsAnalytics = expressAsyncHandler(async (req, res) => {
+  try {
+    const data = await PersonAnalytics.find({});
+
+    res.status(200).json({ success: true, data });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });

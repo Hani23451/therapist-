@@ -17,6 +17,7 @@ const {
   markNotificationAsRead,
   markAllNotificationsAsRead,
   confirmConnection,
+  getPersonsAnalytics,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -957,4 +958,17 @@ router.post("/mark-read/:notificationId", verifyToken, markNotificationAsRead);
  
  */
 router.post("/mark-all-read", verifyToken, markAllNotificationsAsRead);
+
+/**
+ * @swagger
+ * /api/user/persons-analytics:
+ *   get:
+ *     summary: Get all persons analytics
+ *     description: Fetches Persons Analytics
+ *     tags:
+ *       - personsAnalytics
+ 
+ */
+router.get("/persons-analytics", getPersonsAnalytics); 
+
 module.exports = router;

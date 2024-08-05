@@ -205,23 +205,69 @@ exports.updateExperienceStatus = asyncHandler(async (req, res) => {
 
 exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
   try {
+    const { title, description, task1, task2, task3, task4, task5, task6 } =
+      req.body;
+
+    if (!title || !description) {
+      return res
+        .status(400)
+        .json({ message: "Title and description are required" });
+    }
+
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
-    const stream =await cloudinary.uploader.upload_stream(
-      { folder: "analytics" },
-      (error, result) => {
-        if (error) return console.error(error);
-        return res.json({ URL: result.secure_url });
+    // Convert tasks to an array
+    const tasks = [task1, task2, task3, task4, task5, task6].filter(
+      (task) => task
+    );
+
+    // Convert buffer to stream
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "video",
+        folder: "persons_analytics",
+        timeout: 120000,
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Error uploading video:", error);
+          return res
+            .status(500)
+            .json({ message: "Error uploading video", error: error.message });
+        }
+
+        try {
+          // Create new PersonAnalytics instance
+          const personAnalytics = new PersonAnalytics({
+            title,
+            description,
+            video: result.url,
+            tasks, // Pass the tasks array
+          });
+
+          // Save to database
+          await personAnalytics.save();
+
+          return res.render("pages/analytics", { PersonAnalytic: true });
+        } catch (saveError) {
+          console.error("Error saving PersonAnalytics:", saveError);
+          return res
+            .status(500)
+            .json({
+              message: "Error saving PersonAnalytics",
+              error: saveError.message,
+            });
+        }
       }
     );
-    bufferToStream(data).pipe(stream);
+
+    bufferToStream(req.file.buffer).pipe(stream);
   } catch (error) {
     console.error("Error in creatingPersonAnalytics:", error);
     res
       .status(500)
-      .json({ message: "Error uploading file", error: error.message });
+      .json({ message: "Error processing request", error: error.message });
   }
 });
