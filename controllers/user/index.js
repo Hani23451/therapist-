@@ -634,9 +634,9 @@ exports.getPartnerTasks = expressAsyncHandler(async (req, res) => {
 
     const type = await PersonAnalytics.findById(typeId);
 
-    const tasks = type.tasks;
+     type;
 
-    res.status(200).json({ success: true, data: tasks });
+    res.status(200).json({ success: true, data: type });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
