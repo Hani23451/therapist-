@@ -19,7 +19,7 @@
         <div class="flex justify-center sm:justify-end">
           <button
             type="button"
-            class="btn btn-warning"
+            class="text-slate-900 font-bold bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 rounded-full text-lg px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900"
             data-toggle="modal"
             data-target="#addAnalyticsModal"
           >
@@ -259,6 +259,35 @@
             </div>
           </div>
         </div>
+        <div class="w-full justify-cente flex sm:justify-end my-7">
+          <h2
+            class="w-64 bg-gray-400 bg-opacity-85 text-white font-semibold text-lg text-center p-3 rounded-lg"
+          >
+            All PersonsAnalytics
+          </h2>
+        </div>
+        <div
+          class="flex w-[98%] sm:w-[90%] flex-wrap items-center justify-center gap-9 my-8"
+        >
+          <% data.forEach(item => { %>
+          <div class="bg-white rounded-lg w-[370px] shadow-md p-4 relative">
+            <h3
+              class="text-lg text-center p-3 font-semibold capitalize mb-2 break-words px-2 rounded-md bg-gray-900 text-white"
+            >
+              <%= item.title %>
+            </h3>
+
+            <p class="text-gray-600 p-2 rounded-md bg-gray-100 mb-4">
+              description: <%= item.description %>
+            </p>
+
+            <p class="text-gray-600 p-2 rounded-md bg-gray-100 mb-4">
+              Video: <a href="<%= item.video %>">URL</a>
+            </p>
+            <!-- Add delete button if needed -->
+          </div>
+          <% }) %>
+        </div>
       </main>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -284,7 +313,8 @@
           reader.onprogress = function (e) {
             if (e.lengthComputable) {
               const percent = Math.round((e.loaded / e.total) * 100);
-              document.getElementById("progress").style.width = percent *10 + "%";
+              document.getElementById("progress").style.width =
+                percent * 10 + "%";
               document.getElementById(
                 "progress-text"
               ).innerText = `Reading: ${percent}%`;

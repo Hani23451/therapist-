@@ -18,6 +18,8 @@ const {
   markAllNotificationsAsRead,
   confirmConnection,
   getPersonsAnalytics,
+  updateUserKind, 
+  getPartnerTasks
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -970,5 +972,42 @@ router.post("/mark-all-read", verifyToken, markAllNotificationsAsRead);
  
  */
 router.get("/persons-analytics", getPersonsAnalytics); 
+
+/**
+ * @swagger
+ * /api/user/update-user-kind:
+ *   patch:
+ *     summary: update user kind
+ *     description: update user kind
+ *     tags:
+ *       - personsAnalytic_Update
+ *     responses:
+ *       200:
+ *         description: Successfully edit user data
+ *         content:
+ *           application/json:
+ * 
+ 
+ */
+router.patch("/update-user-kind",verifyToken ,updateUserKind );  
+
+
+/**
+ * @swagger
+ * /api/user/get-partner-kind:
+ *   get:
+ *     summary: get partner kind
+ *     description: get partner kind
+ *     tags:
+ *       - personsAnalytic_Update
+ *     responses:
+ *       200:
+ *         description: Successfully edit user data
+ *         content:
+ *           application/json:
+ * 
+ 
+ */
+router.get("/get-partner-kind",verifyToken ,getPartnerTasks ); 
 
 module.exports = router;

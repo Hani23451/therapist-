@@ -584,3 +584,61 @@ exports.getPersonsAnalytics = expressAsyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
 });
+
+exports.updateUserKind = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    user.personType = req.body.kindId;
+    user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "User kind updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+
+exports.getPartnerTasks = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const partner = await User.findById(user.partner);
+    if (!partner) {
+      return res
+        .status(200)
+        .json({ success: false, message: "User Have No Partner" });
+    }
+
+    const typeId = partner.personType;
+    if (!typeId) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Partner Have No Pass test" });
+    }
+
+    const type = await PersonAnalytics.findById(typeId);
+
+    const tasks = type.tasks;
+
+    res.status(200).json({ success: true, data: tasks });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
