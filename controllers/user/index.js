@@ -663,7 +663,7 @@ exports.sayTaskNotification = expressAsyncHandler(async (req, res) => {
         .status(200)
         .json({ success: false, message: "User Have No Partner" });
     } 
-
+const partnerId = partner._id;
 
     const message = {
       notification: {
@@ -701,6 +701,7 @@ exports.getRelationship = expressAsyncHandler(async (req, res) => {
         .status(200)
         .json({ success: false, message: "User Have No Partner" });
     } 
+const partnerId = partner._id; 
 
     const relationship = await Relationship.findOne({
       $or: [
