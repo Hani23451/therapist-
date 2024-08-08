@@ -18,8 +18,10 @@ const {
   markAllNotificationsAsRead,
   confirmConnection,
   getPersonsAnalytics,
-  updateUserKind, 
-  getPartnerTasks
+  updateUserKind,
+  getPartnerTasks,
+  sayTaskNotification,
+  getRelationship,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -971,7 +973,7 @@ router.post("/mark-all-read", verifyToken, markAllNotificationsAsRead);
  *       - personsAnalytics
  
  */
-router.get("/persons-analytics", getPersonsAnalytics); 
+router.get("/persons-analytics", getPersonsAnalytics);
 
 /**
  * @swagger
@@ -989,8 +991,7 @@ router.get("/persons-analytics", getPersonsAnalytics);
  * 
  
  */
-router.patch("/update-user-kind",verifyToken ,updateUserKind );  
-
+router.patch("/update-user-kind", verifyToken, updateUserKind);
 
 /**
  * @swagger
@@ -1008,6 +1009,42 @@ router.patch("/update-user-kind",verifyToken ,updateUserKind );
  * 
  
  */
-router.get("/get-partner-kind",verifyToken ,getPartnerTasks ); 
+router.get("/get-partner-kind", verifyToken, getPartnerTasks);
+
+/**
+ * @swagger
+ * /api/user/complete-task:
+ *   post:
+ *     summary: Complete task
+ *     description: Complete task
+ *     tags:
+ *       - personsAnalytic_Update
+ *     responses:
+ *       200:
+ *         description: Successfully complete task
+ *         content:
+ *           application/json:
+ * 
+ 
+ */
+router.post("/complete-task", verifyToken, sayTaskNotification);
+
+/**
+ * @swagger
+ * /api/user/get-relation:
+ *   get:
+ *     summary: get relation
+ *     description: get relation
+ *     tags:
+ *       - personsAnalytic_Update
+ *     responses:
+ *       200:
+ *         description:get Relation
+ *         content:
+ *           application/json:
+ * 
+ 
+ */
+router.get("/get-relation", verifyToken, getRelationship);
 
 module.exports = router;

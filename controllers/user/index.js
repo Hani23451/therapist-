@@ -641,4 +641,84 @@ exports.getPartnerTasks = expressAsyncHandler(async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
+}); 
+
+
+
+exports.sayTaskNotification = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { task } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const partner = await User.findById(user.partner);
+    if (!partner) {
+      return res
+        .status(200)
+        .json({ success: false, message: "User Have No Partner" });
+    } 
+
+
+    const message = {
+      notification: {
+        title: `${user.fullname}`,
+        body: `قام بتنفيذ مهمة ${task} : `,
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s",
+      },
+      topic: `${partnerId}`,
+    };
+
+    const response = await admin.messaging().send(message); 
+    res.status(200).json({ success: true, data: 'تم ارسال الاشعار' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+
+exports.getRelationship = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { task } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const partner = await User.findById(user.partner);
+    if (!partner) {
+      return res
+        .status(200)
+        .json({ success: false, message: "User Have No Partner" });
+    } 
+
+    const relationship = await Relationship.findOne({
+      $or: [
+        { user1: req.user.userId, user2: partnerId },
+        { user1: partnerId, user2: req.user.userId },
+      ],
+    });  
+    if(!relationship){ 
+      return res
+        .status(200)
+        .json({ success: false, message: "User Have No Relationship" });
+    }
+
+    res.status(200).json({ success: true, data: relationship });
+
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
 });
