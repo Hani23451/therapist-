@@ -1030,7 +1030,22 @@ router.get("/get-partner-kind", verifyToken, getPartnerTasks);
 router.post("/complete-task", verifyToken, sayTaskNotification);
 
 
-  
+  /**
+ * @swagger
+ * /api/user/get-relation:
+ *   get:
+ *     summary: get relation
+ *     description: get relation
+ *     tags:
+ *       - personsAnalytic_Update
+ *     responses:
+ *       200:
+ *         description: get relation
+ *         content:
+ *           application/json:
+ * 
+ 
+ */
 router.get("/get-relation", verifyToken, getRelationship);
 
 
