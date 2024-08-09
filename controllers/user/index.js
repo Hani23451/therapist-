@@ -287,8 +287,6 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
         .status(404)
         .json({ success: false, message: "No partner found for the user" });
     }
-
-    // Check if a relationship already exists between the current user and their partner
     const existingRelationship = await Relationship.findOne({
       $or: [
         { user1: userId, user2: partner._id },
@@ -302,8 +300,6 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
         message: "Relationship already exists between the users",
       });
     }
-
-    // Create the new relationship
     const relationship = await Relationship.create({
       user1: userId,
       user2: partner._id,
@@ -313,11 +309,10 @@ exports.createRelationship = expressAsyncHandler(async (req, res, next) => {
       marriageDate: formattedMarriageDate,
       proposalDate: formattedProposalDate,
     });
-
-    // Update both users' relationship statuses
     user.relationshipStatus = "completed";
     partner.relationshipStatus = "completed";
-
+    user.gemsCount = user.gemsCount + 1;
+    partner.gemsCount = partner.gemsCount + 1;
     await user.save();
     await partner.save();
 
@@ -392,6 +387,10 @@ exports.sendLoveClick = expressAsyncHandler(async (req, res, next) => {
       },
       topic: `${partnerId}`,
     };
+    partnerUser.gemsCount = partnerUser.gemsCount + 1;
+    user.gemsCount = user.gemsCount + 1;
+    await user.save();
+    await partnerUser.save();
 
     const response = await admin.messaging().send(message);
 
@@ -634,16 +633,12 @@ exports.getPartnerTasks = expressAsyncHandler(async (req, res) => {
 
     const type = await PersonAnalytics.findById(typeId);
 
-     type;
-
     res.status(200).json({ success: true, data: type });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
-}); 
-
-
+});
 
 exports.sayTaskNotification = expressAsyncHandler(async (req, res) => {
   try {
@@ -662,9 +657,19 @@ exports.sayTaskNotification = expressAsyncHandler(async (req, res) => {
       return res
         .status(200)
         .json({ success: false, message: "User Have No Partner" });
-    } 
-const partnerId = partner._id;
-
+    }
+    const partnerId = partner._id;
+    const relationship = await Relationship.findOne({
+      $or: [
+        { user1: req.user.userId, user2: partnerId },
+        { user1: partnerId, user2: req.user.userId },
+      ],
+    });
+    if (relationship.loveLevel >= 100) {
+      relationship.loveLevel = relationship.loveLevel;
+    }
+    relationship.loveLevel = relationship.loveLevel + 1;
+    relationship.save();
     const message = {
       notification: {
         title: `${user.fullname}`,
@@ -675,8 +680,8 @@ const partnerId = partner._id;
       topic: `${partnerId}`,
     };
 
-    const response = await admin.messaging().send(message); 
-    res.status(200).json({ success: true, data: 'تم ارسال الاشعار' });
+    const response = await admin.messaging().send(message);
+    res.status(200).json({ success: true, data: "تم ارسال الاشعار" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
@@ -700,24 +705,22 @@ exports.getRelationship = expressAsyncHandler(async (req, res) => {
       return res
         .status(200)
         .json({ success: false, message: "User Have No Partner" });
-    } 
-const partnerId = partner._id; 
+    }
+    const partnerId = partner._id;
 
     const relationship = await Relationship.findOne({
       $or: [
         { user1: req.user.userId, user2: partnerId },
         { user1: partnerId, user2: req.user.userId },
       ],
-    });  
-    if(!relationship){ 
+    });
+    if (!relationship) {
       return res
         .status(200)
         .json({ success: false, message: "User Have No Relationship" });
     }
 
     res.status(200).json({ success: true, data: relationship });
-
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
