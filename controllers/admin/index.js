@@ -291,8 +291,8 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
 
           // Save to database
           await personAnalytics.save();
-
-          return res.render("pages/analytics", { PersonAnalytic: true });
+          const data = await PersonAnalytics.find({});
+          return res.render("pages/analytics", { data, PersonAnalytic: true });
         } catch (saveError) {
           console.error("Error saving PersonAnalytics:", saveError);
           return res.status(500).json({
