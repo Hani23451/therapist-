@@ -95,7 +95,8 @@ router.get("/login", async (req, res) => {
   }
 });
 router.get("/analytics", async (req, res) => {
-  try {
+  try { 
+    
     const data = await PersonAnalytics.find({});
     // Fetch users from the database
     res.render("pages/analytics", { data }); // Pass users data to the EJS template

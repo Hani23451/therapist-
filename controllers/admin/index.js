@@ -270,7 +270,7 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
       {
         resource_type: "video",
         folder: "persons_analytics",
-        timeout: 120000,
+        timeout: 320000,
       },
       async (error, result) => {
         if (error) {
