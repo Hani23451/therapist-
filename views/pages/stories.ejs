@@ -20,7 +20,12 @@
               Add a New Story
             </h2>
           </div>
-          <form action="/admin/add-stroy" method="POST" class="space-y-4">
+          <form
+            action="/admin/add-stroy"
+            method="POST"
+            class="space-y-4"
+            enctype="multipart/form-data"
+          >
             <div>
               <label for="name" class="block text-sm font-medium text-gray-700"
                 >Name</label
@@ -61,6 +66,29 @@
                 required
               />
             </div>
+            <div>
+              <div
+                class="flex flex-col items-center justify-center space-y-2 bg-gray-100 w-full sm:w-[300px]"
+              >
+                <label
+                  for="audio-upload"
+                  class="text-gray-900 font-medium p-2 text-xl"
+                  >Optional Audio</label
+                >
+                <input
+                  id="audio-upload"
+                  type="file"
+                  name="audio"
+                  id="audio"
+
+                  accept="audio/*"
+                  class="bg-gray-200 border border-gray-300 rounded-md py-2 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  onchange="updateFileName()"
+                />
+                <p id="file-name" class="text-gray-500 mt-2"></p>
+              </div>
+            </div>
+
             <div>
               <label
                 for="isPaid"
@@ -171,6 +199,15 @@
 
       function closePopup() {
         document.getElementById("popup-modal").classList.add("hidden");
+      }
+      function updateFileName() {
+        const fileInput = document.getElementById("audio-upload");
+        const fileNameDisplay = document.getElementById("file-name");
+        if (fileInput.files.length > 0) {
+          fileNameDisplay.textContent = `Selected file: ${fileInput.files[0].name}`;
+        } else {
+          fileNameDisplay.textContent = "";
+        }
       }
     </script>
     <script src="/js/main.js"></script>

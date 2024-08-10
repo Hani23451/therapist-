@@ -135,20 +135,62 @@ exports.createContact = asyncHandler(async (req, res) => {
 exports.createStory = async (req, res) => {
   try {
     const { name, content, jewelCount, isPaid } = req.body;
+    if (!req.file) {
+      const newStory = new Stories({
+        name,
+        content,
+        jewelCount,
 
-    // Create a new story instance
-    const newStory = new Stories({
-      name,
-      content,
-      jewelCount,
-      isPaid: isPaid === "true", // Convert string to boolean
-    });
+        isPaid: isPaid === "true", // Convert string to boolean
+      });
 
-    // Save the story to the database
-    await newStory.save();
-    console.log(newStory);
-    // Redirect to the stories page or wherever you want
-    res.redirect("/stories");
+      // Save the story to the database
+      await newStory.save();
+      console.log(newStory);
+      // Redirect to the stories page or wherever you want
+      return res.redirect("/stories");
+    }
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "auto",
+        folder: "stories",
+        timeout: 220000,
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Error uploading audio:", error);
+          return res
+            .status(500)
+            .json({ message: "Error uploading audio", error: error.message });
+        }
+
+        try {
+          // Create a new story instance
+          const newStory = new Stories({
+            name,
+            content,
+            jewelCount,
+            audio: result.secure_url,
+            isPaid: isPaid === "true", // Convert string to boolean
+          });
+
+          // Save the story to the database
+          await newStory.save();
+          console.log(newStory);
+          // Redirect to the stories page or wherever you want
+          res.redirect("/stories");
+        } catch (saveError) {
+          console.error("Error saving story", saveError);
+          return res.status(500).json({
+            message: "Error saving Story",
+            error: saveError.message,
+          });
+        }
+      }
+    );
+
+    bufferToStream(req.file.buffer).pipe(stream);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
@@ -253,12 +295,10 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
           return res.render("pages/analytics", { PersonAnalytic: true });
         } catch (saveError) {
           console.error("Error saving PersonAnalytics:", saveError);
-          return res
-            .status(500)
-            .json({
-              message: "Error saving PersonAnalytics",
-              error: saveError.message,
-            });
+          return res.status(500).json({
+            message: "Error saving PersonAnalytics",
+            error: saveError.message,
+          });
         }
       }
     );

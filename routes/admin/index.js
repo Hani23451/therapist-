@@ -23,7 +23,7 @@ router.post("/create-gems", createGemsBundle);
 router.delete("/delete-gems/:id", deleteGemsBundle);
 router.delete("/delete-question/:id", deleteQuestion);
 router.post("/add-contact", createContact);
-router.post("/add-stroy", createStory);
+router.post("/add-stroy",upload.single("audio"),createStory);
 router.post("/add-experience", addExperience);
 router.post(
   "/add-person-analytics",

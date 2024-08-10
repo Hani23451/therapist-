@@ -31,6 +31,9 @@ const ExperienceSchema = new mongoose.Schema(
     userEmail: {
       type: String,
     },
+    audio:{
+      type:String
+    }
 
   },
   {
