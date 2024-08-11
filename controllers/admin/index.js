@@ -134,13 +134,13 @@ exports.createContact = asyncHandler(async (req, res) => {
 
 exports.createStory = async (req, res) => {
   try {
-    const { name, content_free, content_paid , jewelCount, isPaid } = req.body;
+    const { name, content_free, content_paid, jewelCount, isPaid } = req.body;
     if (!req.file) {
       const newStory = new Stories({
         name,
         content_free,
-        content_paid, 
-        content:content_free + content_paid,
+        content_paid,
+        content: content_free + content_paid,
         jewelCount,
         isPaid: isPaid === "true", // Convert string to boolean
       });
@@ -148,8 +148,8 @@ exports.createStory = async (req, res) => {
       // Save the story to the database
       await newStory.save();
       console.log(newStory);
-      // Redirect to the stories page or wherever you want 
-      console.log(newStory)
+      // Redirect to the stories page or wherever you want
+      console.log(newStory);
       return res.redirect("/stories");
     }
 
@@ -314,8 +314,6 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
       .json({ message: "Error processing request", error: error.message });
   }
 });
- 
-
 
 exports.uploadQuestion = asyncHandler(async (req, res) => {
   try {
@@ -323,21 +321,44 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
 
     // Check if files are available
     if (!files || !files.question || !files.answer) {
-      return res.status(400).json({ message: 'Both question and answer images are required' });
+      return res
+        .status(400)
+        .json({ message: 'Both question and answer images are required' });
     }
-  
-    // Access file buffers
-    const questionImageBuffer = files.question[0].buffer;
-    const answerImageBuffer = files.answer[0].buffer;
-  
-    // Process files (e.g., upload to Cloudinary, save to a database, etc.)
-    console.log('Question Image Buffer:', questionImageBuffer);
-    console.log('Answer Image Buffer:', answerImageBuffer);
-    res.status(200).json({ success: true, message: "Uploaded successfully" });
+
+    // Function to upload a file to Cloudinary and return the result
+    const uploadToCloudinary = (fileBuffer, folder) => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'image',
+            folder: folder,
+          },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result);
+          }
+        );
+
+        bufferToStream(fileBuffer).pipe(uploadStream);
+      });
+    };
+
+    // Upload both images and wait for both to complete
+    const questionResult = await uploadToCloudinary(req.files.question.buffer, 'images');
+    const answerResult = await uploadToCloudinary(req.files.answer.buffer, 'images');
+
+    res.status(200).json({
+      success: true,
+      data: {
+        question: questionResult.secure_url,
+        answer: answerResult.secure_url,
+      },
+    });
   } catch (error) {
-    console.error("Error in creatingPersonAnalytics:", error);
-    res
-      .status(500)
-      .json({ message: "Error processing request", error: error.message });
+    console.error('Error in uploadQuestion:', error);
+    res.status(500).json({ message: 'Error processing request', error: error.message });
   }
 });
