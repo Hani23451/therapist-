@@ -347,8 +347,8 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
     };
 
     // Upload both images and wait for both to complete
-    const questionResult = await uploadToCloudinary(req.files.question.buffer, 'images');
-    const answerResult = await uploadToCloudinary(req.files.answer.buffer, 'images');
+    const questionResult = await uploadToCloudinary(req.files.question[0].buffer, 'images');
+    const answerResult = await uploadToCloudinary(req.files.answer[0].buffer, 'images');
 
     res.status(200).json({
       success: true,
