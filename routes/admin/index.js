@@ -36,8 +36,7 @@ router.post("/delete-experience/:id", deleteExperience);
 router.post("/update-experience-status/:id", updateExperienceStatus);
 router.post(
   "/upload-question",
-  upload.single("question"),
-  upload.single("answer"),
+  upload.fields([{ name: "question" }, { name: "answer" }]),
   uploadQuestion
 );
 

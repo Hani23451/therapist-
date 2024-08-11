@@ -319,12 +319,20 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
 
 exports.uploadQuestion = asyncHandler(async (req, res) => {
   try {
-   
-    console.log(req.file); 
-    // req.fillllllllllllllllllllled
-    console.log(req.files); 
-      // req.body 
-      console.log(req.body);
+    const { files } = req;
+
+    // Check if files are available
+    if (!files || !files.question || !files.answer) {
+      return res.status(400).json({ message: 'Both question and answer images are required' });
+    }
+  
+    // Access file buffers
+    const questionImageBuffer = files.question[0].buffer;
+    const answerImageBuffer = files.answer[0].buffer;
+  
+    // Process files (e.g., upload to Cloudinary, save to a database, etc.)
+    console.log('Question Image Buffer:', questionImageBuffer);
+    console.log('Answer Image Buffer:', answerImageBuffer);
     res.status(200).json({ success: true, message: "Uploaded successfully" });
   } catch (error) {
     console.error("Error in creatingPersonAnalytics:", error);
