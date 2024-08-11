@@ -6,15 +6,19 @@ const ExperienceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    content: {
+    content_free: {
       type: String,
-      required: true,
+    },
+    content_paid: {
+      type: String,
     },
     status: {
       type: String,
       enum: ["draft", "published"],
       default: "draft",
-
+    },
+    content: {
+      type: String,
     },
     jewelCount: {
       type: Number,
@@ -24,17 +28,16 @@ const ExperienceSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
-  
+
     userName: {
       type: String,
     },
     userEmail: {
       type: String,
     },
-    audio:{
-      type:String
-    }
-
+    audio: {
+      type: String,
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

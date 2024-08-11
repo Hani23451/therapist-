@@ -7,6 +7,7 @@ const DB = require("./config/DB.config");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swager");
 const session = require("express-session");
+
 // Middleware
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static("public"));
@@ -24,7 +25,11 @@ app.use(
     },
   })
 );
-app.use(cors());
+app.use(cors({
+  origin: '*', // or specify the origin: 'http://localhost:your-client-port'
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 // Swagger setup

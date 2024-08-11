@@ -35,21 +35,32 @@
                 id="name"
                 name="name"
                 class="mt-1 block w-full p-2 border-2 border-gray-300 rounded-md shadow-sm"
-                required
               />
             </div>
             <div>
               <label
                 for="content"
                 class="block text-sm font-medium text-gray-700"
-                >Content</label
+                >Free Content</label
               >
               <textarea
                 id="content"
-                name="content"
+                name="content_free"
                 rows="9"
                 class="mt-1 block w-full border-2 border-gray-300 rounded-md shadow-sm"
-                required
+              ></textarea>
+            </div>
+            <div>
+              <label
+                for="content"
+                class="block text-sm font-medium text-gray-700"
+                >Paid Content</label
+              >
+              <textarea
+                id="content"
+                name="content_paid"
+                rows="9"
+                class="mt-1 block w-full border-2 border-gray-300 rounded-md shadow-sm"
               ></textarea>
             </div>
             <div>
@@ -80,7 +91,6 @@
                   type="file"
                   name="audio"
                   id="audio"
-
                   accept="audio/*"
                   class="bg-gray-200 border border-gray-300 rounded-md py-2 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   onchange="updateFileName()"

@@ -134,20 +134,22 @@ exports.createContact = asyncHandler(async (req, res) => {
 
 exports.createStory = async (req, res) => {
   try {
-    const { name, content, jewelCount, isPaid } = req.body;
+    const { name, content_free, content_paid , jewelCount, isPaid } = req.body;
     if (!req.file) {
       const newStory = new Stories({
         name,
-        content,
+        content_free,
+        content_paid, 
+        content:content_free + content_paid,
         jewelCount,
-
         isPaid: isPaid === "true", // Convert string to boolean
       });
 
       // Save the story to the database
       await newStory.save();
       console.log(newStory);
-      // Redirect to the stories page or wherever you want
+      // Redirect to the stories page or wherever you want 
+      console.log(newStory)
       return res.redirect("/stories");
     }
 
@@ -169,7 +171,8 @@ exports.createStory = async (req, res) => {
           // Create a new story instance
           const newStory = new Stories({
             name,
-            content,
+            content_free,
+            content_paid,
             jewelCount,
             audio: result.secure_url,
             isPaid: isPaid === "true", // Convert string to boolean
@@ -304,6 +307,21 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
     );
 
     bufferToStream(req.file.buffer).pipe(stream);
+  } catch (error) {
+    console.error("Error in creatingPersonAnalytics:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
+  }
+});
+ 
+
+
+exports.uploadQuestion = asyncHandler(async (req, res) => {
+  try {
+   
+    console.log(req); 
+    res.status(200).json({ success: true, message: "Uploaded successfully" });
   } catch (error) {
     console.error("Error in creatingPersonAnalytics:", error);
     res

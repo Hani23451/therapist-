@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet"    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
+    <link href="../css/main.css" rel="stylesheet" />
+    <title>Game Model One</title>
+  </head>
+  <body class="bg-gray-800 text-gray-900">
+    <main>
+      <div class="m-12">
+        <a
+          href="/games"
+          class="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-slate-200 bg-indigo-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            class="h-6 w-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16l-4-4m0 0l4-4m-4 4h18"
+            ></path>
+          </svg>
+          <span class="ml-1 font-bold text-lg">Back</span>
+        </a>
+      </div>
+      <div class="m-5 sm:m-12 bg-gray-200 bg-opacity-10 p-3 rounded-lg">
+        <form action="#" class="space-y-4">
+          <div
+            class="rounded-md border w-full border-indigo-500 bg-gray-500 p-4 shadow-md"
+          >
+            <label
+              for="upload"
+              class="flex flex-col items-center gap-2 text-white cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-10 w-10 fill-white stroke-indigo-500"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span  class ="span text-white font-mono">Upload Game Image</span>
+            </label>
+            <input id="upload" name="image" type="file" class="hidden" />
+          </div>
+          <div>
+            <label class="sr-only" for="name">Title</label>
+            <input
+              class="w-full bg-transparent focus:border-gray-300 focus:outline-none text-white rounded-lg placeholder:text-white border-gray-500 border-2 p-3 text-lg"
+              placeholder="Game Title"
+              type="text"
+              name="title"
+              id="name"
+            />
+          </div>
+
+          <div>
+            <label class="sr-only" for="message">Description Of Game</label>
+
+            <textarea
+              class="w-full bg-transparent placeholder:text-white focus:border-gray-300 focus:outline-none text-white rounded-lg border-gray-500 border-2 p-3 text-lg"
+              placeholder="Description Of Game"
+              rows="8"
+              id="Description"
+              name="description"
+            ></textarea>
+          </div>
+          <div>
+            <label
+              for="jewelCount"
+              class="block text-lg p-2 font-medium text-gray-100"
+              >Jewel Count</label
+            >
+            <input
+              type="number "
+              id="jewelCount"
+              name="jewelCount"
+              placeholder="0"
+              class="w-full bg-transparent focus:border-gray-300 focus:outline-none text-white rounded-lg border-gray-500 border-2 p-3 text-lg"
+              required
+            />
+          </div>
+          <div>
+            <label
+              for="isPaid"
+              class="block text-lg p-2 font-medium text-gray-100"
+              >Is Paid?</label
+            >
+            <select
+              id="isPaid"
+              name="isPaid"
+              class="w-full bg-transparent focus:border-gray-300 focus:outline-none text-white rounded-lg border-gray-500 border-2 p-3 text-lg"
+              required
+            >
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+          <div class="flex flex-wrap items-center justify-between">
+            <div class="mt-4">
+              <button
+                type="submit"
+                class="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"
+              >
+                Create Game
+              </button>
+            </div>
+
+        
+          </div>
+        </form> 
+        <div class=" flex justify-end items-center  m-4 cursor-pointer">
+          <div class="flex justify-center sm:justify-end">
+            <button
+              type="button"
+              class="text-slate-900 font-bold bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 rounded-full text-lg px-5 py-2.5 text-center me-2 mb-2 dark:focus:ring-yellow-900"
+              data-toggle="modal"
+              data-target="#addAnalyticsModal"
+            >
+              Add Question
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+      class="modal fade"
+      id="addAnalyticsModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="addAnalyticsModalLabel"
+      aria-hidden="true"
+    >
+    <form id="form_question" class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="p-3 gap-4 flex flex-col">
+          <div class="rounded-md border p-1 w-full border-indigo-500 bg-gray-700 shadow-md">
+            <label for="upload-question" class="flex flex-col items-center gap-2 text-white cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span class="status-span text-white font-mono">Upload Question Image</span>
+            </label>
+            <input id="upload-question" name="question" type="file" class="hidden" />
+          </div>
+      
+          <div class="rounded-md border p-1 w-full border-indigo-500 bg-gray-700 shadow-md">
+            <label for="upload-answer" class="flex flex-col items-center gap-2 text-white cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span class="status-span text-white font-mono">Upload Answer Image</span>
+            </label>
+            <input id="upload-answer" name="answer" type="file" class="hidden" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" id="uploadButton" class="btn btn-primary">Add Question</button>
+        </div>
+      </div>
+    </form>
+    
+        </div>
+      </div>
+    </main>  
+    <script> 
+  
+
+  const fileInputs = document.querySelectorAll('input[type="file"]');
+  
+  fileInputs.forEach((input) => {
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      const span = document.querySelector(`label[for="${input.id}"] .status-span`);
+
+      if (file) {
+        // Display the file name and size
+        span.textContent = `Selected file: ${file.name}, Size: ${file.size} bytes`;
+
+        // Optionally, you can display a preview for image files
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          
+          reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.maxWidth = '200px'; // Adjust as needed
+            img.style.marginTop = '10px';
+            span.appendChild(img);
+          };
+          
+          reader.readAsDataURL(file);
+        }
+      } else {
+        span.textContent = 'No file selected.';
+      }
+    });
+  });
+ 
+  const form = document.getElementById('form_question');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault(); // Prevent the default form submission
+
+  const formData = new FormData();
+  const questionInput = document.getElementById('upload-question');
+  const answerInput = document.getElementById('upload-answer');
+
+  if (questionInput.files[0]) {
+    formData.append('question', questionInput.files[0]);
+  }
+
+  if (answerInput.files[0]) {
+    formData.append('answer', answerInput.files[0]);
+  }
+
+  console.log('FormData:', formData); // Log the FormData object
+
+
+  fetch('http://localhost/admin/upload-question', {
+    method: 'POST',
+    body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Success:', data);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+});
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src=".../js/main.js"></script>
+  </body>
+</html>

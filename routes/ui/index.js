@@ -95,9 +95,7 @@ router.get("/login", async (req, res) => {
   }
 });
 router.get("/analytics", async (req, res) => {
-  try {  
-    
-    
+  try {
     const data = await PersonAnalytics.find({});
     // Fetch users from the database
     res.render("pages/analytics", { data }); // Pass users data to the EJS template
@@ -110,6 +108,15 @@ router.get("/games", async (req, res) => {
   try {
     // Fetch users from the database
     res.render("pages/Games"); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+router.get("/games/model_one", async (req, res) => {
+  try {
+    // Fetch users from the database
+    res.render("pages/GamesModels/model_one"); // Pass users data to the EJS template
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");

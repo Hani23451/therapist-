@@ -13,6 +13,7 @@ const {
   deleteExperience,
   updateExperienceStatus,
   creatingPersonAnalytics,
+  uploadQuestion
 } = require("../../controllers/admin/index");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -34,5 +35,6 @@ router.post("/create-question", createQuestion);
 router.post("/stories/delete/:id", deleteStory);
 router.post("/delete-experience/:id", deleteExperience);
 router.post("/update-experience-status/:id", updateExperienceStatus);
+router.post("/upload-question", uploadQuestion);
 
 module.exports = router;
