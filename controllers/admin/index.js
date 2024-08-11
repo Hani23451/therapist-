@@ -320,7 +320,11 @@ exports.creatingPersonAnalytics = asyncHandler(async (req, res) => {
 exports.uploadQuestion = asyncHandler(async (req, res) => {
   try {
    
-    console.log(req); 
+    console.log(req.file); 
+    // req.fillllllllllllllllllllled
+    console.log(req.files); 
+      // req.body 
+      console.log(req.body);
     res.status(200).json({ success: true, message: "Uploaded successfully" });
   } catch (error) {
     console.error("Error in creatingPersonAnalytics:", error);

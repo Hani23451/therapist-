@@ -13,18 +13,17 @@ const {
   deleteExperience,
   updateExperienceStatus,
   creatingPersonAnalytics,
-  uploadQuestion
+  uploadQuestion,
 } = require("../../controllers/admin/index");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
 
 router.post("/auth", AdminLogin);
 router.post("/create-gems", createGemsBundle);
 router.delete("/delete-gems/:id", deleteGemsBundle);
 router.delete("/delete-question/:id", deleteQuestion);
 router.post("/add-contact", createContact);
-router.post("/add-stroy",upload.single("audio"),createStory);
+router.post("/add-stroy", upload.single("audio"), createStory);
 router.post("/add-experience", addExperience);
 router.post(
   "/add-person-analytics",
@@ -35,6 +34,11 @@ router.post("/create-question", createQuestion);
 router.post("/stories/delete/:id", deleteStory);
 router.post("/delete-experience/:id", deleteExperience);
 router.post("/update-experience-status/:id", updateExperienceStatus);
-router.post("/upload-question", uploadQuestion);
+router.post(
+  "/upload-question",
+  upload.single("question"),
+  upload.single("answer"),
+  uploadQuestion
+);
 
 module.exports = router;
