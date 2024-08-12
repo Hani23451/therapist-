@@ -6,8 +6,10 @@ const Stories = require("../../models/Stories");
 const Experience = require("../../models/Experience");
 const PersonAnalytics = require("../../models/PersonAnalytics");
 const cloudinary = require("../../config/Cloudinary");
+const GameModelTow = require("../../models/GameModelTwo");
 const sharp = require("sharp");
 const bufferToStream = require("../../utils/ImageStream");
+const GameModelTwo = require("../../models/GameModelTwo");
 exports.AdminLogin = asyncHandler(async (req, res, next) => {
   console.log(req.body);
   const { email, password } = req.body;
@@ -323,7 +325,7 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
     if (!files || !files.question || !files.answer) {
       return res
         .status(400)
-        .json({ message: 'Both question and answer images are required' });
+        .json({ message: "Both question and answer images are required" });
     }
 
     // Function to upload a file to Cloudinary and return the result
@@ -331,7 +333,7 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
       return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            resource_type: 'image',
+            resource_type: "image",
             folder: folder,
           },
           (error, result) => {
@@ -347,8 +349,14 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
     };
 
     // Upload both images and wait for both to complete
-    const questionResult = await uploadToCloudinary(req.files.question[0].buffer, 'images');
-    const answerResult = await uploadToCloudinary(req.files.answer[0].buffer, 'images');
+    const questionResult = await uploadToCloudinary(
+      req.files.question[0].buffer,
+      "images"
+    );
+    const answerResult = await uploadToCloudinary(
+      req.files.answer[0].buffer,
+      "images"
+    );
 
     res.status(200).json({
       success: true,
@@ -358,7 +366,88 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error in uploadQuestion:', error);
-    res.status(500).json({ message: 'Error processing request', error: error.message });
+    console.error("Error in uploadQuestion:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
+  }
+});
+
+exports.createGameModelOne = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.body);
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
+  }
+});
+exports.createGameModelTow = asyncHandler(async (req, res) => {
+  try {
+    // Parse the form data, including file and other fields
+    const { title, description, jewelCount, isPaid, question } = req.body;
+    // Access array from form data
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "image",
+        folder: "images",
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Error uploading image:", error);
+          return res
+            .status(500)
+            .json({ message: "Error uploading image", error: error.message });
+        }
+
+        try {
+          const gameModelTow = new GameModelTow({
+            image: result.secure_url,
+            title,
+            description,
+            gemsCount: parseInt(jewelCount),
+            isPaid: isPaid === "true", // Convert string to boolean
+            content: question,
+          });
+          await gameModelTow.save();
+          const data = await GameModelTow.find({});
+          return res.render("pages/GamesModels/model_two", {
+            data,
+            gameAdded: true,
+          });
+        } catch (saveError) {
+          console.error("Error saving game model:", saveError);
+          return res.status(500).json({
+            message: "Error saving game model",
+            error: saveError.message,
+          });
+        }
+      }
+    );
+
+    bufferToStream(req.file.buffer).pipe(stream);
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
+  }
+});
+
+exports.DeleteItemModelTow = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    const item = await GameModelTwo.findOneAndDelete({ _id: id });
+    const data = await GameModelTow.find({});
+    return res.render("pages/GamesModels/model_two", {
+      data,
+    });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
   }
 });

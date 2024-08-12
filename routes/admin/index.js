@@ -14,6 +14,9 @@ const {
   updateExperienceStatus,
   creatingPersonAnalytics,
   uploadQuestion,
+  createGameModelOne,
+  createGameModelTow,
+  DeleteItemModelTow,
 } = require("../../controllers/admin/index");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -40,4 +43,20 @@ router.post(
   uploadQuestion
 );
 
+router.post(
+  "/create-game-modelOne",
+
+  createGameModelOne
+);
+
+router.post(
+  "/create-game-modeltwo",
+  upload.single("image"),
+  createGameModelTow
+);
+router.post(
+  "/delete-game-modeltwo/:id",
+
+  DeleteItemModelTow
+);
 module.exports = router;
