@@ -441,9 +441,7 @@ exports.DeleteItemModelTow = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const item = await GameModelTwo.findOneAndDelete({ _id: id });
     const data = await GameModelTow.find({});
-    return res.render("pages/GamesModels/model_two", {
-      data,
-    });
+    res.redirect('/games/model_two');
   } catch (error) {
     console.error("Error processing request:", error);
     res

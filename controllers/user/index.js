@@ -632,7 +632,11 @@ exports.getPartnerTasks = expressAsyncHandler(async (req, res) => {
     }
 
     const type = await PersonAnalytics.findById(typeId);
-
+    if (!type) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Partner Have No Pass test" });
+    }
     res.status(200).json({ success: true, data: type });
   } catch (error) {
     console.error(error);
@@ -640,13 +644,11 @@ exports.getPartnerTasks = expressAsyncHandler(async (req, res) => {
   }
 });
 
-exports.sayTaskNotification = expressAsyncHandler(async (req, res) => { 
-   
+exports.sayTaskNotification = expressAsyncHandler(async (req, res) => {
   try {
     const userId = req.user.userId;
     const { task } = req.body;
- 
-    
+
     const user = await User.findById(userId);
     if (!user) {
       return res

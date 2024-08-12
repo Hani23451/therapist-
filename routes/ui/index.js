@@ -133,6 +133,17 @@ router.get("/games/model_two", async (req, res) => {
     console.error(error);
     res.status(500).send("Server Error");
   }
+}); 
+
+router.get("/games/model_three", async (req, res) => {
+  try {
+    // Fetch users from the database
+
+    res.render("pages/GamesModels/model_three", ); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
 });
 
 module.exports = router;

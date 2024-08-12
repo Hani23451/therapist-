@@ -6,9 +6,45 @@
   <link rel="stylesheet"    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 
     <link href="../css/main.css" rel="stylesheet" />
-    <title>Game Model One</title>
+    <title>Game Model Three</title>
   </head>
-  <body class="bg-gray-800 text-gray-900">
+  <body class="bg-gray-800 text-gray-900"> 
+    <div
+    class="modal fade"
+    id="successModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="successModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Success</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span class="text-white" aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Game Have been Added Successfully
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
     <main>
       <div class="m-12">
         <a
@@ -33,7 +69,9 @@
         </a>
       </div>
       <div class=" mx-auto w-[98%] sm:w-[70%] sm:m-12 bg-gray-200 bg-opacity-10 p-3 rounded-lg">
-        <form method="POST" action="/admin/create-game-modelOne" class="space-y-4">
+        <form method="POST" action="/admin/create-game-modeltwo" 
+        enctype="multipart/form-data" 
+         class="space-y-4">
           <div
             class="rounded-md border w-full border-indigo-500 bg-gray-500 p-2 shadow-md"
           >
@@ -56,7 +94,7 @@
               </svg>
               <span  class ="span text-white font-mono">Upload Game Image</span>
             </label>
-            <input id="upload" name="image" type="file" class="hidden" />
+            <input required id="upload" name="image" type="file" class="hidden" />
           </div>
           <div>
             <label class="sr-only" for="name">Title</label>
@@ -65,7 +103,8 @@
               placeholder="Game Title"
               type="text"
               name="title"
-              id="name"
+              id="name" 
+              required
             />
           </div>
 
@@ -78,6 +117,7 @@
               rows="5"
               id="Description"
               name="description"
+              required
             ></textarea>
           </div>
           <div>
@@ -87,7 +127,7 @@
               >Jewel Count</label
             >
             <input
-              type="number "
+              type="number"
               id="jewelCount"
               name="jewelCount"
               placeholder="0"
@@ -111,7 +151,7 @@
               <option value="false">No</option>
             </select>
           </div>
-          <div id="items-container" class="flex items-center justify-center gap-4 flex-wrap"></div>
+          <div id="items-container" class="flex w-[98%]  mx-auto  items-center justify-center gap-4 flex-wrap"></div>
           <div class="flex flex-wrap items-center justify-between">
             <div class="mt-4">
               <button
@@ -146,28 +186,14 @@
       aria-labelledby="addAnalyticsModalLabel"
       aria-hidden="true"
     >
-    <di id="form_question" class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="p-3 gap-4 flex flex-col">
-          <div class="rounded-md border p-1 w-full border-indigo-500 bg-gray-700 shadow-md">
-            <label for="upload-question" class="flex flex-col items-center gap-2 text-white cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span class="status-span text-white font-mono">Upload Question Image</span>
-            </label>
-            <input id="upload-question" accept="image/*"  name="question" type="file" class="hidden" />
-          </div>
-      
-          <div class="rounded-md border p-1 w-full border-indigo-500 bg-gray-700 shadow-md">
-            <label for="upload-answer" class="flex flex-col items-center gap-2 text-white cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span class="status-span text-white font-mono">Upload Answer Image</span>
-            </label>
-            <input id="upload-answer" accept="image/*"  name="answer" type="file" class="hidden" />
-          </div>
+    <div id="form_question" class="modal-dialog" role="document">
+      <div class="modal-content"> 
+        <div class="p-2">
+          <textarea id="question" name="question" placeholder="Question" class="w-full rounded-xl bg-transparent focus:border-gray-300 focus:outline-none text-white border-gray-500 border-2 p-3 text-lg"></textarea>
+          <div class="h-4"></div>
+          <textarea id="answer" name="answer" placeholder="Answer" class="w-full rounded-xl bg-transparent focus:border-gray-300 focus:outline-none text-white border-gray-500 border-2 p-3 text-lg"></textarea>
+          
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -177,7 +203,8 @@
     </div>
     
         </div>
-      </div>
+      </div> 
+    
     </main>  
     <script> 
   const uploadedImages = [];
@@ -211,73 +238,85 @@
         span.textContent = 'No file selected.';
       }
     });
-  });
- 
-  const form = document.getElementById('uploadButton');
+  }); 
 
-form.addEventListener('click', (e) => {
-  e.preventDefault(); // Prevent the default form submission
+  const questions = [];
+const btn = document.getElementById('uploadButton');
 
-  const formData = new FormData();
-  const questionInput = document.getElementById('upload-question');
-  const answerInput = document.getElementById('upload-answer');
+btn.addEventListener('click', function() {
+  const inputQuestion = document.getElementById('question');
+  const inputAnswer = document.getElementById('answer');
+  const questionValue = inputQuestion.value;
+  const answerValue = inputAnswer.value;
 
-  if (questionInput.files[0]) {
-    formData.append('question', questionInput.files[0]);
   
+  if (questionValue && answerValue) {
+    questions.push({question: questionValue, answer: answerValue});
+    inputQuestion.value = '';
+    inputAnswer.value = '';
+    renderQuestions();
   }
+});
 
-  if (answerInput.files[0]) {
-    formData.append('answer', answerInput.files[0]);
+const container = document.getElementById('items-container');
+
+const renderQuestions = () => {
+  // Clear the container before rendering
+  container.innerHTML = '';
+
+  questions.forEach((question, idx) => {
+    // Create a new div element for each question
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'bg-white bg-opacity-10 rounded-lg shadow-md p-2 mb-2'; // Add margin-bottom for spacing
+    
+    questionDiv.innerHTML = `
+    <div class="relative bg-gray-800 p-2 rounded-lg shadow-md">
+  <!-- Remove Button -->
+  <span onclick="removeQuestion(${idx})" class="absolute top-0 right-0 cursor-pointer px-1  font-bold text-xl text-white bg-red-600 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+    ×
+  </span>
   
-  }
-
-  const successModal = new bootstrap.Modal(document.getElementById('addAnalyticsModal'));
-  successModal.hide();
-
-  console.log('FormData:', formData); // Log the FormData object
-
-
-  fetch('https://hani-server-3qfo.onrender.com/admin/upload-question', {
-    method: 'POST',
-    body: formData,
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Success:', data .data ); 
-uploadedImages.push(data.data);
-renderImages();
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
-}); 
-
-function renderImages() {
-  const container = document.getElementById('items-container');
-  container.innerHTML = ''; // Clear existing content
-  
-  uploadedImages.forEach((item ,idx) => {
-    const card = document.createElement('div');
-    card.className = 'col-md-4 mb-4';
-    card.innerHTML = `<div class="bg-white rounded-lg shadow-md p-4 flex gap-4"> 
-      <h2 class ="text-2xl text-center px-3 bg-gray-200 rounded-md ">${idx}</h2>
-  <div class="flex-1">
-    <h5 class="card-title text-center">Question Image</h5>
-    <img src="${item.question}" class="w-24 h-24 rounded-full object-cover mx-auto" alt="Question Image">
-    <input type="text" name="question" class="form-control mt-2 mb-2 w-full" value="${item.question}" placeholder="Edit Question URL">
+<div class="mb-3"></div>
+  <div class="flex items-center justify-center gap-2 mb-1">
+    <h5 class="text-lg font-bold text-white">Question ${idx + 1}</h5>
+    <input type="text" name="question[${idx}]" class="border-none outline-none rounded-lg break-all border-gray-500 p-2  text-sm sm:text-lg bg-gray-700 text-white" value="${question.question}" placeholder="Edit Question">
   </div>
-  <div class="flex-1">
-    <h5 class="card-title text-center">Answer Image</h5>
-    <img src="${item.answer}" class="w-24 h-24 rounded-full object-cover mx-auto" alt="Answer Image">
-    <input type="text" name="answer" class="form-control mt-2 mb-2 w-full" value="${item.answer}" placeholder="Edit Answer URL">
+  
+  <!-- Answer Section -->
+  <div class="flex items-center justify-center gap-2">
+    <h5 class="text-lg font-bold text-white">Answer ${idx + 1}</h5>
+    <input type="text" name="answer[${idx}]" class="border-none outline-none rounded-lg break-all border-gray-500 p-1  text-sm sm:text-lg bg-gray-700 text-white" value="${question.answer}" placeholder="Edit Answer">
   </div>
 </div>
-`;
-    container.appendChild(card);
-  });
-}
 
+    `;
+
+    // Append the new div to the container
+    container.appendChild(questionDiv);
+  });
+};
+ 
+const removeQuestion = (idx) => {
+  questions.splice(idx, 1);
+  renderQuestions();
+} 
+
+
+
+// Initial render to display any existing questions
+renderQuestions();
+  
+document.addEventListener("DOMContentLoaded", function () {
+        // Ensure that PersonAnalytic has a default value if not passed
+        const gameAddedBool =
+          '<%= typeof gameAdded !== "undefined" ? gameAdded : "false" %>';
+        if (gameAddedBool === "true") {
+          const successModal = new bootstrap.Modal(
+            document.getElementById("successModal")
+          );
+          successModal.show();
+        }
+      });
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
