@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 
-const GameModelOne = new mongoose.Schema(
-  {
+const GameModelThree = new mongoose.Schema(
+  { 
+    type:{ 
+      type: String, 
+      default:"GameModelThree",
+    } ,
     image: {
       type: String,
       required: true,
     },
-    timeCounter: {
-      type: Boolean,
-      default: true,
-    },
+
     title: {
       type: String,
       required: true,
@@ -42,4 +43,4 @@ const GameModelOne = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("GameModelOne", GameModelOne);
+module.exports = mongoose.model("GameModelThree", GameModelThree);

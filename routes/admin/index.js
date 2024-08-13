@@ -17,6 +17,8 @@ const {
   createGameModelOne,
   createGameModelTow,
   DeleteItemModelTow,
+  createGameModelThree,
+  DeleteItemModelThree,
 } = require("../../controllers/admin/index");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -55,8 +57,19 @@ router.post(
   createGameModelTow
 );
 router.post(
+  "/create-game-modelthree",
+  upload.single("image"),
+  createGameModelThree
+);
+router.post(
   "/delete-game-modeltwo/:id",
 
   DeleteItemModelTow
+);
+
+router.post(
+  "/delete-game-modelthree/:id",
+
+  DeleteItemModelThree
 );
 module.exports = router;

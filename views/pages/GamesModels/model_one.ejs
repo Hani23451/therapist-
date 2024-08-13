@@ -10,27 +10,30 @@
   </head>
   <body class="bg-gray-800 text-gray-900">
     <main>
-      <div class="m-12">
-        <a
-          href="/games"
-          class="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-slate-200 bg-indigo-50"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="h-6 w-6"
+      <div class="flex m-12 flex-row-reverse   items-center justify-around gap-4 flex-wrap"> 
+        <h1 class="text-3xl text-slate-50 font-bold">Model One </h1>
+        <div class="">
+          <a
+            href="/games"
+            class="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-slate-200 bg-indigo-50"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 16l-4-4m0 0l4-4m-4 4h18"
-            ></path>
-          </svg>
-          <span class="ml-1 font-bold text-lg">Back</span>
-        </a>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="h-6 w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16l-4-4m0 0l4-4m-4 4h18"
+              ></path>
+            </svg>
+            <span class="ml-1 font-bold text-lg">Back</span>
+          </a>
+        </div>
       </div>
       <div class=" mx-auto w-[98%] sm:w-[70%] sm:m-12 bg-gray-200 bg-opacity-10 p-3 rounded-lg">
         <form method="POST" action="/admin/create-game-modelOne" class="space-y-4">
@@ -54,9 +57,9 @@
                   d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <span  class ="span text-white font-mono">Upload Game Image</span>
+              <span id="span-image"  class ="span text-white font-mono">Upload Game Image</span>
             </label>
-            <input id="upload" name="image" type="file" class="hidden" />
+            <input id="upload" name="image" accept="image/*" type="file" class="hidden" />
           </div>
           <div>
             <label class="sr-only" for="name">Title</label>
@@ -154,7 +157,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span class="status-span text-white font-mono">Upload Question Image</span>
+              <span id="span-1" class="status-span text-white font-mono">Upload Question Image</span>
             </label>
             <input id="upload-question" accept="image/*"  name="question" type="file" class="hidden" />
           </div>
@@ -164,7 +167,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 fill-white stroke-indigo-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span class="status-span text-white font-mono">Upload Answer Image</span>
+              <span id="span-2" class="status-span text-white font-mono">Upload Answer Image</span>
             </label>
             <input id="upload-answer" accept="image/*"  name="answer" type="file" class="hidden" />
           </div>
@@ -221,7 +224,8 @@ form.addEventListener('click', (e) => {
   const formData = new FormData();
   const questionInput = document.getElementById('upload-question');
   const answerInput = document.getElementById('upload-answer');
-
+const span1 =document.getElementById('span-1');
+const span2 =document.getElementById('span-2');
   if (questionInput.files[0]) {
     formData.append('question', questionInput.files[0]);
   
@@ -232,8 +236,8 @@ form.addEventListener('click', (e) => {
   
   }
 
-  const successModal = new bootstrap.Modal(document.getElementById('addAnalyticsModal'));
-  successModal.hide();
+  span1.innerHTML = 'Uploading...';
+  span2.innerHTML = 'Uploading...';
 
   console.log('FormData:', formData); // Log the FormData object
 
@@ -243,12 +247,16 @@ form.addEventListener('click', (e) => {
     body: formData,
   })
   .then(response => response.json())
-  .then(data => {
+  .then(data => { 
+    span1.innerHTML = 'Upload Question Image'
+    span2.innerHTML = ' Upload Answer Image';
     console.log('Success:', data .data ); 
 uploadedImages.push(data.data);
 renderImages();
   })
-  .catch((error) => {
+  .catch((error) => { 
+    span1.innerHTML = 'faild to upload';
+    span2.innerHTML = 'faild to upload';
     console.error('Error:', error);
   });
 }); 
@@ -277,7 +285,19 @@ function renderImages() {
     container.appendChild(card);
   });
 }
+ 
 
+const GameImage = document.getElementById('upload') 
+const spanImage = document.getElementById('span-image')
+GameImage.addEventListener('change', (e) => { 
+  const file = e.target.files[0];
+  if (file) {
+    // Display the file name
+    spanImage.innerText = file.name;
+  }
+
+
+});
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

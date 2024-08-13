@@ -10,6 +10,7 @@ const authAdminValidation = require("../../middlewares/adminValidation");
 const RelationShip = require("../../models/RelationShip");
 const PersonAnalytics = require("../../models/PersonAnalytics");
 const GameModelTow = require("../../models/GameModelTwo");
+const GameModelThree = require("../../models/GameModelThree");
 router.get("/", authAdminValidation, (req, res) => {
   res.render("pages/home", { name: "Chris Martin" });
 });
@@ -133,13 +134,24 @@ router.get("/games/model_two", async (req, res) => {
     console.error(error);
     res.status(500).send("Server Error");
   }
-}); 
+});
 
 router.get("/games/model_three", async (req, res) => {
   try {
     // Fetch users from the database
+    const data = await GameModelThree.find({});
+    res.render("pages/GamesModels/model_three", { data }); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
 
-    res.render("pages/GamesModels/model_three", ); // Pass users data to the EJS template
+router.get("/games/model_four", async (req, res) => {
+  try {
+    // Fetch users from the database
+
+    res.render("pages/GamesModels/model_four"); // Pass users data to the EJS template
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");

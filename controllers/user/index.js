@@ -453,8 +453,7 @@ exports.getUserData = expressAsyncHandler(async (req, res) => {
     const relationships = await Relationship.findOne({
       $or: [{ user1: req.user.userId }, { user2: req.user.userId }],
     })
-      .populate("user1", "fullname email   ") // Populate user1 details
-      .populate("user2", "fullname email  "); // Populate user2 details
+ // Populate user2 details
 
     res
       .status(200)
@@ -712,7 +711,7 @@ exports.getRelationship = expressAsyncHandler(async (req, res) => {
     }
     const partnerId = partner._id;
 
-    const relationship = await Relationship.findOne({
+    let relationship = await Relationship.findOne({
       $or: [
         { user1: req.user.userId, user2: partnerId },
         { user1: partnerId, user2: req.user.userId },
@@ -722,9 +721,10 @@ exports.getRelationship = expressAsyncHandler(async (req, res) => {
       return res
         .status(200)
         .json({ success: false, message: "User Have No Relationship" });
-    }
+    } 
 
-    res.status(200).json({ success: true, data: relationship });
+ relationship = relationship;
+    res.status(200).json({ success: true, data: relationship  });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });

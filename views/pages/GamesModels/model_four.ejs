@@ -6,7 +6,7 @@
   <link rel="stylesheet"    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 
     <link href="../css/main.css" rel="stylesheet" />
-    <title>Game Model Two</title>
+    <title>Game Model Four</title>
   </head>
   <body class="bg-gray-800 text-gray-900"> 
     <div
@@ -46,30 +46,33 @@
     </div>
   </div>
     <main>
-      <div class="m-12">
-        <a
-          href="/games"
-          class="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-slate-200 bg-indigo-50"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            class="h-6 w-6"
+      <div class="flex m-12 flex-row-reverse   items-center justify-around gap-4 flex-wrap"> 
+        <h1 class="text-3xl text-slate-50 font-bold">Model Four </h1>
+        <div class="">
+          <a
+            href="/games"
+            class="inline-flex items-center border border-indigo-300 px-3 py-1.5 rounded-md text-indigo-500 hover:bg-slate-200 bg-indigo-50"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 16l-4-4m0 0l4-4m-4 4h18"
-            ></path>
-          </svg>
-          <span class="ml-1 font-bold text-lg">Back</span>
-        </a>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="h-6 w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 16l-4-4m0 0l4-4m-4 4h18"
+              ></path>
+            </svg>
+            <span class="ml-1 font-bold text-lg">Back</span>
+          </a>
+        </div>
       </div>
       <div class=" mx-auto w-[98%] sm:w-[70%] sm:m-12 bg-gray-200 bg-opacity-10 p-3 rounded-lg">
-        <form method="POST" action="/admin/create-game-modeltwo" 
+        <form method="POST" action="/admin/create-game-modelthree" 
         enctype="multipart/form-data" 
          class="space-y-4">
           <div
@@ -92,9 +95,9 @@
                   d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
-              <span  class ="span text-white font-mono">Upload Game Image</span>
+              <span id="span-image"  class ="span text-white font-mono">Upload Game Image</span>
             </label>
-            <input required id="upload" name="image" type="file" class="hidden" />
+            <input required id="upload" accept="image/*" name="image" type="file" class="hidden" />
           </div>
           <div>
             <label class="sr-only" for="name">Title</label>
@@ -151,7 +154,7 @@
               <option value="false">No</option>
             </select>
           </div>
-          <div id="items-container" class="flex items-center justify-center gap-4 flex-wrap"></div>
+          <div id="items-container" class="flex w-[98%]  mx-auto  items-center justify-center gap-4 flex-wrap"></div>
           <div class="flex flex-wrap items-center justify-between">
             <div class="mt-4">
               <button
@@ -189,7 +192,10 @@
     <div id="form_question" class="modal-dialog" role="document">
       <div class="modal-content"> 
         <div class="p-2">
-          <input type="text" id="question" name="question" placeholder="Question" class="w-full  rounded-xl bg-transparent focus:border-gray-300 focus:outline-none text-white border-gray-500 border-2 p-3 text-lg">
+          <textarea id="question" name="question" placeholder="Question" class="w-full rounded-xl bg-transparent focus:border-gray-300 focus:outline-none text-white border-gray-500 border-2 p-3 text-lg"></textarea>
+          <div class="h-4"></div>
+          <textarea id="answer" name="answer" placeholder="Answer" class="w-full rounded-xl bg-transparent focus:border-gray-300 focus:outline-none text-white border-gray-500 border-2 p-3 text-lg"></textarea>
+          
 
         </div>
         <div class="modal-footer">
@@ -201,36 +207,7 @@
     
         </div>
       </div> 
-      <div
-          class="flex w-[98%] sm:w-[90%] flex-wrap mx-auto items-center justify-center gap-9 my-8"
-        >
-          <% data.forEach(item => { %>
-            <div class="bg-gray-300 rounded-lg w-[370px] shadow-md relative">
-              <!-- Image -->
-              <img src="<%= item.image %>" class="w-full h-44 rounded-lg object-cover mx-auto" alt="Game Image" />
-            
-              <!-- Title -->
-              <h3 class="text-lg text-center p-2 font-bold capitalize mb-2 break-words px-2 rounded-md text-gray-900">
-                Title: <%= item.title %>
-              </h3>
-            
-              <!-- Description -->
-              <p class="text-gray-600 p-2 font-semibold rounded-md break-words text-lg mb-4">
-                Description: <%= item.description %>
-              </p>
-            
-              <!-- Delete Button -->
-              <form action="/admin/delete-game-modeltwo/<%= item._id %>" method="post" class="absolute top-2 right-2">
-                <button type="submit" class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </form>
-            </div>
-            
-          <% }) %>
-        </div>
+  
     </main>  
     <script> 
   const uploadedImages = [];
@@ -271,12 +248,15 @@ const btn = document.getElementById('uploadButton');
 
 btn.addEventListener('click', function() {
   const inputQuestion = document.getElementById('question');
-  const value = inputQuestion.value;
-  console.log(value);
+  const inputAnswer = document.getElementById('answer');
+  const questionValue = inputQuestion.value;
+  const answerValue = inputAnswer.value;
+
   
-  if (value) {
-    questions.push(value);
+  if (questionValue && answerValue) {
+    questions.push({question: questionValue, answer: answerValue});
     inputQuestion.value = '';
+    inputAnswer.value = '';
     renderQuestions();
   }
 });
@@ -293,11 +273,25 @@ const renderQuestions = () => {
     questionDiv.className = 'bg-white bg-opacity-10 rounded-lg shadow-md p-2 mb-2'; // Add margin-bottom for spacing
     
     questionDiv.innerHTML = `
-      <div class="flex items-center Justify-center gap-2 relative"> 
-        <span onclick="removeQuestion(${idx})" class="absolute cursor-pointer top-0 right-0 px-2 font-bold text-3xl text-black bg-red-500 rounded-md">x</span>
-        <h5 class="text-lg font-bold">Question ${idx + 1}</h5>
-        <input type="text" name="question[]" class=" border-nonde outline-none rounded-lg break-all border-gray-500 p-3 text-lg" value="${question}" placeholder="Edit Question">
-      </div>
+    <div class="relative bg-gray-800 p-2 rounded-lg shadow-md">
+  <!-- Remove Button -->
+  <span onclick="removeQuestion(${idx})" class="absolute top-0 right-0 cursor-pointer px-1  font-bold text-xl text-white bg-red-600 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+    ×
+  </span>
+  
+<div class="mb-3"></div>
+  <div class="flex items-center justify-center gap-2 mb-1">
+    <h5 class="text-lg font-bold text-white">Question ${idx + 1}</h5>
+    <input type="text" name="question[]" class="border-none outline-none rounded-lg break-all border-gray-500 p-2  text-sm sm:text-lg bg-gray-700 text-white" value="${question.question}" placeholder="Edit Question">
+  </div>
+  
+  <!-- Answer Section -->
+  <div class="flex items-center justify-center gap-2">
+    <h5 class="text-lg font-bold text-white">Answer ${idx + 1}</h5>
+    <input type="text" name="answer[]" class="border-none outline-none rounded-lg break-all border-gray-500 p-1  text-sm sm:text-lg bg-gray-700 text-white" value="${question.answer}" placeholder="Edit Answer">
+  </div>
+</div>
+
     `;
 
     // Append the new div to the container
@@ -325,7 +319,18 @@ document.addEventListener("DOMContentLoaded", function () {
           );
           successModal.show();
         }
-      });
+      }); 
+      const GameImage = document.getElementById('upload') 
+const spanImage = document.getElementById('span-image')
+GameImage.addEventListener('change', (e) => { 
+  const file = e.target.files[0];
+  if (file) {
+    // Display the file name
+    spanImage.innerText = file.name;
+  }
+
+  
+});
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

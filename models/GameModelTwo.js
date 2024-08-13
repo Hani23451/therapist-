@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const GameModelTow = new mongoose.Schema(
   {
+    type: {
+      type: String,
+      default: "GameModelTow",
+    },
     image: {
       type: String,
       required: true,
