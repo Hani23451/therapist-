@@ -11,9 +11,11 @@ const Experience = require("../../models/Experience");
 const Notification = require("../../models/Notification");
 const moment = require("moment");
 const PersonAnalytics = require("../../models/PersonAnalytics");
-
+const GameModelTwo = require("../../models/GameModelTwo");
+const GameModelThree = require("../../models/GameModelThree");
+const GameModelOne = require("../../models/GameModelOne");
 const nodemailer = require("nodemailer");
-
+const shuffleArray = require("../../utils/shuffleArray");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -452,8 +454,7 @@ exports.getUserData = expressAsyncHandler(async (req, res) => {
     // Fetch relationships involving the user, populating user details
     const relationships = await Relationship.findOne({
       $or: [{ user1: req.user.userId }, { user2: req.user.userId }],
-    })
- // Populate user2 details
+    });
 
     res
       .status(200)
@@ -721,10 +722,31 @@ exports.getRelationship = expressAsyncHandler(async (req, res) => {
       return res
         .status(200)
         .json({ success: false, message: "User Have No Relationship" });
-    } 
+    }
 
- relationship = relationship;
-    res.status(200).json({ success: true, data: relationship  });
+    relationship = relationship;
+    res.status(200).json({ success: true, data: relationship });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+
+exports.getGames = expressAsyncHandler(async (req, res) => {
+  try {
+    // Fetch data from all models
+    const game1 = await GameModelOne.find().select("-content").exec();
+    const game2 = await GameModelTwo.find().select("-content").exec();
+    const game3 = await GameModelThree.find().select("-content").exec();
+
+    // Combine results into a single array
+    const allGames = [...game1, ...game2, ...game3];
+
+    // Shuffle the combined array
+    const shuffledGames = shuffleArray(allGames);
+
+    // Send the response
+    res.status(200).json({ success: true, data: shuffledGames });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });

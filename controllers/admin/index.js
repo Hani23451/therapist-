@@ -11,6 +11,7 @@ const sharp = require("sharp");
 const bufferToStream = require("../../utils/ImageStream");
 const GameModelTwo = require("../../models/GameModelTwo");
 const GameModelThree = require("../../models/GameModelThree");
+const GameModelOne = require("../../models/GameModelOne");
 exports.AdminLogin = asyncHandler(async (req, res, next) => {
   console.log(req.body);
   const { email, password } = req.body;
@@ -374,16 +375,7 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
   }
 });
 
-exports.createGameModelOne = asyncHandler(async (req, res) => {
-  try {
-    console.log(req.body);
-  } catch (error) {
-    console.error("Error:", error);
-    res
-      .status(500)
-      .json({ message: "Error processing request", error: error.message });
-  }
-});
+
 exports.createGameModelTow = asyncHandler(async (req, res) => {
   try {
     // Parse the form data, including file and other fields
@@ -442,7 +434,7 @@ exports.DeleteItemModelTow = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const item = await GameModelTwo.findOneAndDelete({ _id: id });
     const data = await GameModelTow.find({});
-    res.redirect('/games/model_two');
+    res.redirect("/games/model_two");
   } catch (error) {
     console.error("Error processing request:", error);
     res
@@ -450,15 +442,14 @@ exports.DeleteItemModelTow = asyncHandler(async (req, res) => {
       .json({ message: "Error processing request", error: error.message });
   }
 });
- 
 
 exports.createGameModelThree = asyncHandler(async (req, res) => {
   try {
     // Parse the form data, including file and other fields
-    const { title, description, jewelCount, isPaid, question  ,answer } = req.body;
+    const { title, description, jewelCount, isPaid, question, answer } =
+      req.body;
     // Access array from form data
-console.log(question ,answer);
-
+    console.log(question, answer);
 
     const stream = cloudinary.uploader.upload_stream(
       {
@@ -473,15 +464,25 @@ console.log(question ,answer);
             .json({ message: "Error uploading image", error: error.message });
         }
 
-        try { 
-          const arr = [] 
-          if (Array.isArray(question) && Array.isArray(answer) && question.length > 0 && answer.length > 0) {
+        try {
+          const arr = [];
+          if (
+            Array.isArray(question) &&
+            Array.isArray(answer) &&
+            question.length > 0 &&
+            answer.length > 0
+          ) {
             // Check if both arrays have the same length
             const length = Math.min(question.length, answer.length);
-            
+
             for (let i = 0; i < length; i++) {
               // Ensure neither value is undefined or null
-              if (question[i] !== undefined && question[i] !== null && answer[i] !== undefined && answer[i] !== null) {
+              if (
+                question[i] !== undefined &&
+                question[i] !== null &&
+                answer[i] !== undefined &&
+                answer[i] !== null
+              ) {
                 arr.push({
                   question: question[i],
                   answer: answer[i],
@@ -498,7 +499,7 @@ console.log(question ,answer);
             content: arr,
           });
           await gameModelThree.save();
-          const data = await GameModelThree.find({}); 
+          const data = await GameModelThree.find({});
           console.log(gameModelThree);
           return res.render("pages/GamesModels/model_three", {
             data,
@@ -523,13 +524,107 @@ console.log(question ,answer);
   }
 });
 
-
 exports.DeleteItemModelThree = asyncHandler(async (req, res) => {
   try {
     const id = req.params.id;
     const item = await GameModelThree.findOneAndDelete({ _id: id });
     const data = await GameModelThree.find({});
-    res.redirect('/games/model_three');
+    res.redirect("/games/model_three");
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
+  }
+});
+
+exports.createGameModelOne = asyncHandler(async (req, res) => {
+  try {
+    // Parse the form data, including file and other fields
+    const { title, description, jewelCount, isPaid, question, answer } =
+      req.body;
+    // Access array from form data
+    console.log(question, answer);
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "image",
+        folder: "images",
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Error uploading image:", error);
+          return res
+            .status(500)
+            .json({ message: "Error uploading image", error: error.message });
+        }
+
+        try {
+          const arr = [];
+          if (
+            Array.isArray(question) &&
+            Array.isArray(answer) &&
+            question.length > 0 &&
+            answer.length > 0
+          ) {
+            // Check if both arrays have the same length
+            const length = Math.min(question.length, answer.length);
+
+            for (let i = 0; i < length; i++) {
+              // Ensure neither value is undefined or null
+              if (
+                question[i] !== undefined &&
+                question[i] !== null &&
+                answer[i] !== undefined &&
+                answer[i] !== null
+              ) {
+                arr.push({
+                  question: question[i],
+                  answer: answer[i],
+                });
+              }
+            }
+          }
+          const gameModelOne = new GameModelOne({
+            image: result.secure_url,
+            title,
+            description,
+            gemsCount: parseInt(jewelCount),
+            isPaid: isPaid === "true", // Convert string to boolean
+            content: arr,
+          });
+          await gameModelOne.save();
+          const data = await GameModelOne.find({});
+          console.log(gameModelOne);
+          return res.render("pages/GamesModels/model_one", {
+            data,
+            gameAdded: true,
+          });
+        } catch (saveError) {
+          console.error("Error saving game model:", saveError);
+          return res.status(500).json({
+            message: "Error saving game model",
+            error: saveError.message,
+          });
+        }
+      }
+    );
+
+    bufferToStream(req.file.buffer).pipe(stream);
+  } catch (error) {
+    console.error("Error processing request:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing request", error: error.message });
+  }
+});
+
+exports.DeleteItemModelOne = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    const item = await GameModelOne.findOneAndDelete({ _id: id });
+    const data = await GameModelOne.find({});
+    res.redirect("/games/model_one");
   } catch (error) {
     console.error("Error processing request:", error);
     res

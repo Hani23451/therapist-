@@ -36,7 +36,9 @@
         </div>
       </div>
       <div class=" mx-auto w-[98%] sm:w-[70%] sm:m-12 bg-gray-200 bg-opacity-10 p-3 rounded-lg">
-        <form method="POST" action="/admin/create-game-modelOne" class="space-y-4">
+        <form method="POST" action="/admin/create-game-modelone" 
+        enctype="multipart/form-data" 
+         class="space-y-4">
           <div
             class="rounded-md border w-full border-indigo-500 bg-gray-500 p-2 shadow-md"
           >
@@ -59,7 +61,7 @@
               </svg>
               <span id="span-image"  class ="span text-white font-mono">Upload Game Image</span>
             </label>
-            <input id="upload" name="image" accept="image/*" type="file" class="hidden" />
+            <input required id="upload" accept="image/*" name="image" type="file" class="hidden" />
           </div>
           <div>
             <label class="sr-only" for="name">Title</label>
@@ -68,7 +70,8 @@
               placeholder="Game Title"
               type="text"
               name="title"
-              id="name"
+              id="name" 
+              required
             />
           </div>
 
@@ -81,6 +84,7 @@
               rows="5"
               id="Description"
               name="description"
+              required
             ></textarea>
           </div>
           <div>
@@ -90,7 +94,7 @@
               >Jewel Count</label
             >
             <input
-              type="number "
+              type="number"
               id="jewelCount"
               name="jewelCount"
               placeholder="0"
@@ -114,7 +118,7 @@
               <option value="false">No</option>
             </select>
           </div>
-          <div id="items-container" class="flex items-center justify-center gap-4 flex-wrap"></div>
+          <div id="items-container" class="flex w-[98%]  mx-auto  items-center justify-center gap-4 flex-wrap"></div>
           <div class="flex flex-wrap items-center justify-between">
             <div class="mt-4">
               <button
@@ -124,10 +128,9 @@
                 Create Game
               </button>
             </div>
-
-        
+ 
           </div>
-        </form> 
+        </form>  
         <div class=" flex justify-end items-center  m-4 cursor-pointer">
           <div class="flex justify-center sm:justify-end">
             <button
@@ -149,7 +152,7 @@
       aria-labelledby="addAnalyticsModalLabel"
       aria-hidden="true"
     >
-    <di id="form_question" class="modal-dialog" role="document">
+    <di id="form_question" class="modal-dialog w-[300px]" role="document">
       <div class="modal-content">
         <div class="p-3 gap-4 flex flex-col">
           <div class="rounded-md border p-1 w-full border-indigo-500 bg-gray-700 shadow-md">
@@ -180,7 +183,37 @@
     </div>
     
         </div>
-      </div>
+      </div> 
+      <div
+      class="flex w-[98%] sm:w-[90%] flex-wrap mx-auto items-center justify-center gap-9 my-8"
+    >
+      <% data.forEach(item => { %>
+        <div class="bg-gray-300 rounded-lg w-[370px] shadow-md relative">
+          <!-- Image -->
+          <img src="<%= item.image %>" class="w-full h-44 rounded-lg object-cover mx-auto" alt="Game Image" />
+        
+          <!-- Title -->
+          <h3 class="text-lg text-center p-2 font-bold capitalize mb-2 break-words px-2 rounded-md text-gray-900">
+            Title: <%= item.title %>
+          </h3>
+        
+          <!-- Description -->
+          <p class="text-gray-600 p-2 font-semibold rounded-md break-words text-lg mb-4">
+            Description: <%= item.description %>
+          </p>
+        
+          <!-- Delete Button -->
+          <form action="/admin/delete-game-modelone/<%= item._id %>" method="post" class="absolute top-2 right-2">
+            <button type="submit" class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </form>
+        </div>
+        
+      <% }) %>
+    </div>
     </main>  
     <script> 
   const uploadedImages = [];
@@ -249,7 +282,9 @@ const span2 =document.getElementById('span-2');
   .then(response => response.json())
   .then(data => { 
     span1.innerHTML = 'Upload Question Image'
-    span2.innerHTML = ' Upload Answer Image';
+    span2.innerHTML = ' Upload Answer Image'; 
+    questionInput.value = '';
+    answerInput.value = '';
     console.log('Success:', data .data ); 
 uploadedImages.push(data.data);
 renderImages();
@@ -266,22 +301,27 @@ function renderImages() {
   container.innerHTML = ''; // Clear existing content
   
   uploadedImages.forEach((item ,idx) => {
-    const card = document.createElement('div');
-    card.className = 'col-md-4 mb-4';
-    card.innerHTML = `<div class="bg-white rounded-lg shadow-md p-4 flex gap-4"> 
-      <h2 class ="text-2xl text-center px-3 bg-gray-200 rounded-md ">${idx}</h2>
-  <div class="flex-1">
-    <h5 class="card-title text-center">Question Image</h5>
-    <img src="${item.question}" class="w-24 h-24 rounded-full object-cover mx-auto" alt="Question Image">
-    <input type="text" name="question" class="form-control mt-2 mb-2 w-full" value="${item.question}" placeholder="Edit Question URL">
+const card = document.createElement('div');
+card.className = 'col-md-4 mb-4';
+
+card.innerHTML = `
+  <div class="bg-white rounded-lg shadow-md p-2 flex flex-col ">
+    <h2 class="text-2xl w-16 mx-auto text-center mb-1  px-3 bg-gray-700 text-white rounded-md"> ${idx}</h2>
+    <div class="flex items-center flex-wrap m-2  gap-4">
+      <h5 class=" text-lg text-gray-900 sm:text-xl">Question </h5>
+  
+      <input type="text" name="question[]" class="outline-none  border-none outline-none  bg-gray-700 text-white  p-2 rounded-md " value="${item.question}" placeholder="Edit Question URL">
+    </div> 
+      <div class="flex items-center flex-wrap m-2  gap-4">
+      <h5 class=" text-lg text-gray-900 sm:text-xl">Answer </h5>
+  
+      <input type="text" name="answer[]" class="outline-none  border-none outline-none  bg-gray-700 text-white  p-2 rounded-md " value="${item.answer}" placeholder="Edit Question URL">
+    </div>
+
   </div>
-  <div class="flex-1">
-    <h5 class="card-title text-center">Answer Image</h5>
-    <img src="${item.answer}" class="w-24 h-24 rounded-full object-cover mx-auto" alt="Answer Image">
-    <input type="text" name="answer" class="form-control mt-2 mb-2 w-full" value="${item.answer}" placeholder="Edit Answer URL">
-  </div>
-</div>
 `;
+
+
     container.appendChild(card);
   });
 }
@@ -297,7 +337,18 @@ GameImage.addEventListener('change', (e) => {
   }
 
 
-});
+}); 
+document.addEventListener("DOMContentLoaded", function () {
+        // Ensure that PersonAnalytic has a default value if not passed
+        const gameAddedBool =
+          '<%= typeof gameAdded !== "undefined" ? gameAdded : "false" %>';
+        if (gameAddedBool === "true") {
+          const successModal = new bootstrap.Modal(
+            document.getElementById("successModal")
+          );
+          successModal.show();
+        }
+      }); 
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

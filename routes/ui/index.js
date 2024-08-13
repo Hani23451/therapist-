@@ -11,6 +11,7 @@ const RelationShip = require("../../models/RelationShip");
 const PersonAnalytics = require("../../models/PersonAnalytics");
 const GameModelTow = require("../../models/GameModelTwo");
 const GameModelThree = require("../../models/GameModelThree");
+const GameModelOne = require("../../models/GameModelOne");
 router.get("/", authAdminValidation, (req, res) => {
   res.render("pages/home", { name: "Chris Martin" });
 });
@@ -118,7 +119,8 @@ router.get("/games", async (req, res) => {
 router.get("/games/model_one", async (req, res) => {
   try {
     // Fetch users from the database
-    res.render("pages/GamesModels/model_one"); // Pass users data to the EJS template
+    const data = await GameModelOne.find({});
+    res.render("pages/GamesModels/model_one", { data }); // Pass users data to the EJS template
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");

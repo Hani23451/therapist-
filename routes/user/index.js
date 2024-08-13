@@ -22,6 +22,7 @@ const {
   getPartnerTasks,
   sayTaskNotification,
   getRelationship,
+  getGames
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -1049,5 +1050,22 @@ router.post("/complete-task", verifyToken, sayTaskNotification);
 router.get("/get-relation", verifyToken, getRelationship);
 
 
+  /**
+ * @swagger
+ * /api/user/get-games:
+ *   get:
+ *     summary: get Games
+ *     description: get Games
+ *     tags:
+ *       - Games
+ *     responses:
+ *       200:
+ *         description: get Games
+ *         content:
+ *           application/json:
+ * 
+ 
+ */
+  router.get("/get-games", getGames);
 
 module.exports = router;
