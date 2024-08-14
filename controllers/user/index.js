@@ -752,3 +752,33 @@ exports.getGames = expressAsyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
 });
+
+exports.getGame = expressAsyncHandler(async (req, res) => {
+  try {
+    const { model, id } = req.body;
+    let data = null; // Use `let` instead of `const` to allow reassignment
+
+    switch (model) {
+      case "GameModelOne":
+        data = await GameModelOne.findById(id);
+        break;
+      case "GameModelTwo":
+        data = await GameModelTwo.findById(id);
+        break;
+      case "GameModelThree":
+        data = await GameModelThree.findById(id);
+        break;
+      default:
+        return res.status(400).json({ success: false, message: "Invalid model type" }); // Handle unknown model types
+    }
+
+    if (!data) {
+      return res.status(404).json({ success: false, message: "Game not found" }); // Handle case where no game is found
+    }
+
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});

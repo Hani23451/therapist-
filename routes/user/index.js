@@ -22,7 +22,8 @@ const {
   getPartnerTasks,
   sayTaskNotification,
   getRelationship,
-  getGames
+  getGames,
+  getGame,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -1030,8 +1031,7 @@ router.get("/get-partner-kind", verifyToken, getPartnerTasks);
  */
 router.post("/complete-task", verifyToken, sayTaskNotification);
 
-
-  /**
+/**
  * @swagger
  * /api/user/get-relation:
  *   get:
@@ -1049,8 +1049,7 @@ router.post("/complete-task", verifyToken, sayTaskNotification);
  */
 router.get("/get-relation", verifyToken, getRelationship);
 
-
-  /**
+/**
  * @swagger
  * /api/user/get-games:
  *   get:
@@ -1066,6 +1065,59 @@ router.get("/get-relation", verifyToken, getRelationship);
  * 
  
  */
-  router.get("/get-games", getGames);
+router.get("/get-games", getGames);
+
+/**
+ * @swagger
+ * /api/user/get-game:
+ *   post:
+ *     summary: Get Game
+ *     description: Retrieve a game model by its ID based on the provided model type.
+ *     tags:
+ *       - Games
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               model:
+ *                 type: string
+ *                 enum:
+ *                   - GameModelOne
+ *                   - GameModelTwo
+ *                   - GameModelThree
+ *                 description: The type of game model to retrieve.
+ *               id:
+ *                 type: string
+ *                 description: The ID of the game model to retrieve.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the game model.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   description: The game model data.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                   description: Error message.
+ */
+router.post("/get-game", getGame);
 
 module.exports = router;
