@@ -4,7 +4,7 @@ const GameModelTow = new mongoose.Schema(
   {
     type: {
       type: String,
-      default: "GameModelTow",
+      default: "GameModelTwo",
     },
     image: {
       type: String,

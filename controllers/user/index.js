@@ -16,6 +16,7 @@ const GameModelThree = require("../../models/GameModelThree");
 const GameModelOne = require("../../models/GameModelOne");
 const nodemailer = require("nodemailer");
 const shuffleArray = require("../../utils/shuffleArray");
+const { RtcTokenBuilder, RtcRole } = require("agora-access-token");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -769,16 +770,59 @@ exports.getGame = expressAsyncHandler(async (req, res) => {
         data = await GameModelThree.findById(id);
         break;
       default:
-        return res.status(400).json({ success: false, message: "Invalid model type" }); // Handle unknown model types
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid model type" }); // Handle unknown model types
     }
 
     if (!data) {
-      return res.status(404).json({ success: false, message: "Game not found" }); // Handle case where no game is found
+      return res
+        .status(404)
+        .json({ success: false, message: "Game not found" }); // Handle case where no game is found
     }
 
     res.status(200).json({ success: true, data });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+
+exports.generateRTCToken = expressAsyncHandler(async (req, resp) => {
+  try {
+    resp.header("Access-Control-Allow-Origin", "*");
+    const channelName = req.params.channel;
+    if (!channelName) {
+      return resp.status(500).json({ error: "channel is required" });
+    }
+    let uid = req.params.uid;
+    if (!uid || uid === "") {
+      return resp.status(500).json({ error: "uid is required" });
+    }
+
+    let role;
+    if (req.params.role === "publisher") {
+      role = RtcRole.PUBLISHER;
+    } else if (req.params.role === "audience") {
+      role = RtcRole.SUBSCRIBER;
+    } else {
+      return resp.status(500).json({ error: "role is incorrect" });
+    }
+    const expireTime = 35000;
+    const currentTime = Math.floor(Date.now() / 1000);
+    const privilegeExpireTime = currentTime + expireTime;
+    const token = RtcTokenBuilder.buildTokenWithUid(
+      "440b48a613cb4ad0987da77b5193b3fa",
+      "7a545301de594414a10fdc0ea627c4cf",
+      channelName,
+      uid,
+      role,
+      privilegeExpireTime
+    );
+
+    return resp.status(200).json({ token: token });
+  } catch (error) {
+    console.error(error);
+    resb.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
 });

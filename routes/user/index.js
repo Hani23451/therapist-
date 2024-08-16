@@ -24,6 +24,7 @@ const {
   getRelationship,
   getGames,
   getGame,
+  generateRTCToken,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -1120,4 +1121,65 @@ router.get("/get-games", getGames);
  */
 router.post("/get-game", getGame);
 
+
+
+/**
+ * @swagger
+ * /agora-token/{channel}/{role}/{uid}:
+ *   get:
+ *     summary: Generate an Agora RTC token
+ *     description: Generates a real-time communication (RTC) token for a specific user and channel using Agora's RTC SDK.
+ *     tags:
+ *       - Agora
+ *     parameters:
+ *       - in: path
+ *         name: channel
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The name of the RTC channel.
+ *       - in: path
+ *         name: role
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [publisher, audience]
+ *         description: The role of the user in the channel, either 'publisher' or 'audience'.
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique identifier for the user. It should be a numeric ID.
+ *     responses:
+ *       200:
+ *         description: A JSON object containing the generated RTC token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: The generated RTC token.
+ *       500:
+ *         description: Error generating the RTC token or missing/invalid parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Description of the error.
+ *                 message:
+ *                   type: string
+ *                   description: Server error message in Arabic.
+ */
+
+router.get(
+  "/agora-token/:channel/:role/:uid",
+  // require("../../middlewares/nocashe"),
+  generateRTCToken
+);
 module.exports = router;
