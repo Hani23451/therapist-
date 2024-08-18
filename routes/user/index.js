@@ -1208,7 +1208,7 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
 /**
  * @swagger
  * /api/user/accept-Invitation:
- *   post:
+ *   get:
  *     summary: Accept a play invitation and generate RTC tokens
  *     description: Accepts a play invitation, generates unique RTC tokens for both users, and sends notifications with these tokens and channel information.
  *     tags:
@@ -1267,6 +1267,6 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
  *                   type: string
  *                   example: حدث خطأ في الخادم
  */
-router.post("/accept-Invitation", verifyToken, acceptPlayInvitation);
+router.get("/accept-Invitation", verifyToken, acceptPlayInvitation);
 
 module.exports = router;
