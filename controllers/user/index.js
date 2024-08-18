@@ -16,7 +16,8 @@ const GameModelThree = require("../../models/GameModelThree");
 const GameModelOne = require("../../models/GameModelOne");
 const nodemailer = require("nodemailer");
 const shuffleArray = require("../../utils/shuffleArray");
-const { RtcTokenBuilder, RtcRole } = require("agora-access-token");
+const RtcGenerateToken = require("../../utils/createRtcToken");
+const fireBaseMessage = require("../../utils/firebaseMessage");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -788,41 +789,133 @@ exports.getGame = expressAsyncHandler(async (req, res) => {
   }
 });
 
-exports.generateRTCToken = expressAsyncHandler(async (req, resp) => {
+exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
   try {
-    resp.header("Access-Control-Allow-Origin", "*");
-    const channelName = req.params.channel;
-    if (!channelName) {
-      return resp.status(500).json({ error: "channel is required" });
+    const { gameId, model } = req.body;
+    const userId = req.user.userId;
+
+    // Fetch user and partner
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    let uid = req.params.uid;
-    if (!uid || uid === "") {
-      return resp.status(500).json({ error: "uid is required" });
+    const partnerId = user.partner;
+    const partner = await User.findById(partnerId);
+    if (!partner) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Partner not found" });
     }
 
-    let role;
-    if (req.params.role === "publisher") {
-      role = RtcRole.PUBLISHER;
-    } else if (req.params.role === "audience") {
-      role = RtcRole.SUBSCRIBER;
-    } else {
-      return resp.status(500).json({ error: "role is incorrect" });
+    // Fetch game based on model
+    let game;
+    switch (model) {
+      case "GameModelOne":
+        game = await GameModelOne.findById(gameId);
+        break;
+      case "GameModelTwo":
+        game = await GameModelTwo.findById(gameId);
+        break;
+      case "GameModelThree":
+        game = await GameModelThree.findById(gameId);
+        break;
+      default: {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid game model" });
+      }
     }
-    const expireTime = 35000;
-    const currentTime = Math.floor(Date.now() / 1000);
-    const privilegeExpireTime = currentTime + expireTime;
-    const token = RtcTokenBuilder.buildTokenWithUid(
-      "440b48a613cb4ad0987da77b5193b3fa",
-      "7a545301de594414a10fdc0ea627c4cf",
-      channelName,
-      uid,
-      role,
-      privilegeExpireTime
-    );
 
-    return resp.status(200).json({ token: token });
+    if (!game) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Game not found" });
+    }
+
+    // Send notification
+    const message = {
+      notification: {
+        title: `شريكك ارسل لك دعوه للعب`,
+        body: `ستقومان بلعب ${game.title} `,
+        imageUrl:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s",
+      },
+      data: {
+        gameId: game._id.toString(),
+        model,
+      },
+      topic: `${partnerId}`,
+    };
+
+    const response = await admin.messaging().send(message);
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Invitation sent successfully" });
   } catch (error) {
     console.error(error);
-    resb.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+  }
+});
+
+exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    // Fetch user and partner
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    
+    const partnerId = user.partner;
+    const partner = await User.findById(partnerId);
+    if (!partner) {
+      return res.status(404).json({ success: false, message: "Partner not found" });
+    }
+
+    // Generate a unique channel name for the couple
+    const channelName = `${userId}_${partnerId}`;
+
+    // Generate RTC tokens for both users
+    const userTokenRtc = await RtcGenerateToken(channelName, userId); // Generate RTC Token for the user
+    const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
+
+    // Create Firebase messages
+    const messageUser = fireBaseMessage(
+      "السماح",
+      "انقر للسماح باللعب",
+      {
+        channelName: channelName,
+        userToken: userTokenRtc,
+        type: "allow_call",
+      },
+      userId
+    );
+
+    const messagePartner = fireBaseMessage(
+      "السماح",
+      "انقر للسماح باللعب",
+      {
+        channelName: channelName,
+        userToken: partnerTokenRtc,
+        type: "allow_call",
+      },
+      partnerId
+    );
+
+    // Send notifications
+    await admin.messaging().send(messageUser);
+    await admin.messaging().send(messagePartner);
+
+    return res.status(200).json({
+      success: true,
+      message: "Invitation accepted and RTC tokens generated",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
   }
 });

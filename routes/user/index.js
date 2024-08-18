@@ -24,7 +24,8 @@ const {
   getRelationship,
   getGames,
   getGame,
-  generateRTCToken,
+  sendPlayInvitation,
+  acceptPlayInvitation,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 
@@ -1121,65 +1122,151 @@ router.get("/get-games", getGames);
  */
 router.post("/get-game", getGame);
 
+/**
+ * @swagger
+ * /api/user/game-Invitation:
+ *   post:
+ *     summary: Send a game invitation to a partner
+ *     description: Sends a game invitation to the user's partner, notifying them via Firebase Cloud Messaging.
+ *     tags:
+ *       - Games
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               gameId:
+ *                 type: string
+ *                 description: ID of the game to invite the partner to
+ *                 example: "64b8f81aab2b345671000003"
+ *               model:
+ *                 type: string
+ *                 description: The model of the game (e.g., GameModelOne, GameModelTwo, GameModelThree)
+ *                 example: "GameModelOne"
+ *     responses:
+ *       200:
+ *         description: Invitation sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Invitation sent successfully"
+ *                 response:
+ *                   type: object
+ *                   description: Firebase response object
+ *       400:
+ *         description: Invalid request parameters or game model
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid game model"
+ *       404:
+ *         description: User, partner, or game not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "حدث خطأ في الخادم"
+ */
 
+router.post("/game-Invitation", verifyToken, sendPlayInvitation);
 
 /**
  * @swagger
- * /agora-token/{channel}/{role}/{uid}:
- *   get:
- *     summary: Generate an Agora RTC token
- *     description: Generates a real-time communication (RTC) token for a specific user and channel using Agora's RTC SDK.
+ * /api/user/accept-Invitation:
+ *   post:
+ *     summary: Accept a play invitation and generate RTC tokens
+ *     description: Accepts a play invitation, generates unique RTC tokens for both users, and sends notifications with these tokens and channel information.
  *     tags:
- *       - Agora
- *     parameters:
- *       - in: path
- *         name: channel
- *         required: true
- *         schema:
- *           type: string
- *         description: The name of the RTC channel.
- *       - in: path
- *         name: role
- *         required: true
- *         schema:
- *           type: string
- *           enum: [publisher, audience]
- *         description: The role of the user in the channel, either 'publisher' or 'audience'.
- *       - in: path
- *         name: uid
- *         required: true
- *         schema:
- *           type: string
- *         description: The unique identifier for the user. It should be a numeric ID.
+ *       - Games
+ *     requestBody:
+ *       description: Request body containing the user ID (from the authenticated user) and other necessary information for generating RTC tokens.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user accepting the invitation. This should be obtained from the authenticated user's session.
+ *             required:
+ *               - userId
  *     responses:
  *       200:
- *         description: A JSON object containing the generated RTC token.
+ *         description: Invitation accepted successfully, RTC tokens generated, and notifications sent.
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 token:
- *                   type: string
- *                   description: The generated RTC token.
- *       500:
- *         description: Error generating the RTC token or missing/invalid parameters.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Description of the error.
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                   description: Server error message in Arabic.
+ *                   example: Invitation accepted and RTC tokens generated
+ *       404:
+ *         description: User or partner not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Server error or failed to generate tokens or send notifications.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: حدث خطأ في الخادم
  */
+router.post("/accept-Invitation", verifyToken, acceptPlayInvitation);
 
-router.get(
-  "/agora-token/:channel/:role/:uid",
-  // require("../../middlewares/nocashe"),
-  generateRTCToken
-);
 module.exports = router;
