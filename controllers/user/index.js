@@ -794,7 +794,7 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
     const { gameId, model } = req.body;
     const userId = req.user.userId;
 
-    // Fetch user and partner
+  
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -844,6 +844,7 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
       data: {
         gameId: game._id.toString(),
         model,
+        type: "initiateGame",
       },
       topic: `${partnerId}`,
     };
@@ -863,7 +864,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    // Fetch user and partner
+
     const user = await User.findById(userId);
     if (!user) {
       return res
