@@ -839,8 +839,7 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
       notification: {
         title: `شريكك ارسل لك دعوه للعب`,
         body: `ستقومان بلعب ${game.title} `,
-        imageUrl:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s",
+        imageUrl: `${game.image}`,
       },
       data: {
         gameId: game._id.toString(),
@@ -867,16 +866,18 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     // Fetch user and partner
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    
+
     const partnerId = user.partner;
     const partner = await User.findById(partnerId);
     if (!partner) {
-      return res.status(404).json({ success: false, message: "Partner not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Partner not found" });
     }
-
-    // Generate a unique channel name for the couple
     const channelName = `${userId}_${partnerId}`;
 
     // Generate RTC tokens for both users
@@ -906,7 +907,6 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
       partnerId
     );
 
-    // Send notifications
     await admin.messaging().send(messageUser);
     await admin.messaging().send(messagePartner);
 
