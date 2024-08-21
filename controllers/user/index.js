@@ -868,6 +868,8 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
 
 exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
   try {
+    const { model, gameId } = req.body;
+
     const userId = req.user.userId;
 
     const user = await User.findById(userId);
@@ -902,8 +904,8 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           channelName: channelName,
           userToken: `${userTokenRtc}`,
           type: "allow_call",
-          userId: `${userId}`,
-          partnerId: `${partnerId}`,
+          model: `${model}`,
+          gameId: `${gameId}`,
         },
         topic: `${userId}`,
       },
@@ -917,8 +919,8 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           channelName: channelName,
           userToken: `${partnerTokenRtc}`,
           type: "allow_call",
-          userId: `${partnerId}`,
-          partnerId: `${userId}`,
+          model: `${model}`,
+          gameId: `${gameId}`,
         },
         topic: `${partnerId}`,
       },

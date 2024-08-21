@@ -1208,7 +1208,7 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
 /**
  * @swagger
  * /api/user/accept-Invitation:
- *   get:
+ *   post:
  *     summary: Accept a play invitation and generate RTC tokens
  *     description: Accepts a play invitation, generates unique RTC tokens for both users, and sends notifications with these tokens and channel information.
  *     tags:
@@ -1224,8 +1224,16 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
  *               userId:
  *                 type: string
  *                 description: The ID of the user accepting the invitation. This should be obtained from the authenticated user's session.
+ *               model:
+ *                 type: string
+ *                 description: The model of the game or device.
+ *               gameId:
+ *                 type: string
+ *                 description: The ID of the game being played.
  *             required:
  *               - userId
+ *               - model
+ *               - gameId
  *     responses:
  *       200:
  *         description: Invitation accepted successfully, RTC tokens generated, and notifications sent.
@@ -1240,6 +1248,11 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
  *                 message:
  *                   type: string
  *                   example: Invitation accepted and RTC tokens generated
+ *                 results:
+ *                   type: array
+ *                   description: An array of results from Firebase.
+ *                   items:
+ *                     type: object
  *       404:
  *         description: User or partner not found.
  *         content:
@@ -1267,6 +1280,7 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
  *                   type: string
  *                   example: حدث خطأ في الخادم
  */
-router.get("/accept-Invitation", verifyToken, acceptPlayInvitation);
+
+router.post("/accept-Invitation", verifyToken, acceptPlayInvitation);
 
 module.exports = router;
