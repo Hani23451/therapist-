@@ -913,8 +913,16 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
       },
     ];
 
-    // Send all messages together
-    const response = await admin.messaging().sendAll(messages);
+    // Send messages using sendEach
+    const results = await Promise.all(
+      messages.map((message) => admin.messaging().sendEach([message]))
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Invitation accepted, RTC tokens generated, and notifications sent",
+      results, // Optional: to log or return the response from Firebase
+    });
 
 
     return res.status(200).json({
