@@ -891,7 +891,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
 
     // Generate RTC tokens for both users
     const userTokenRtc = await RtcGenerateToken(channelName, userId); // Generate RTC Token for the user
-    // const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
+    const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
 
     // Create Firebase messages
     const messages = [
@@ -918,12 +918,12 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         },
         data: {
           channelName: channelName,
-          userToken: userTokenRtc,
+          userToken: `${partnerTokenRtc}`,
           type: "allow_call",
           model: `${model}`,
           gameId: `${gameId}`,
         },
-        topic: `${partnerId}`,
+        topic: partnerId,
       },
     ];
 
