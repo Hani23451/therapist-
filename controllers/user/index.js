@@ -848,6 +848,13 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
       topic: `${partnerId}`,
     };
 
+    const notification = await Notification.create({
+      user: partnerId,
+      type: "Invite Play",
+      message: `دعاك للعب معه${user.fullname}`,
+    });
+    await partner.save();
+
     const response = await admin.messaging().send(message);
 
     return res
@@ -893,10 +900,10 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         },
         data: {
           channelName: channelName,
-          userToken: userTokenRtc,
+          userToken: `${userTokenRtc}`,
           type: "allow_call",
-          userId ,
-          partnerId 
+          userId: `${userId}`,
+          partnerId: `${partnerId}`,
         },
         topic: `${userId}`,
       },
@@ -908,10 +915,10 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         },
         data: {
           channelName: channelName,
-          userToken: partnerTokenRtc,
-          type: "allow_call",  
-          userId ,
-          partnerId 
+          userToken: `${partnerTokenRtc}`,
+          type: "allow_call",
+          userId: `${partnerId}`,
+          partnerId: `${userId}`,
         },
         topic: `${partnerId}`,
       },
@@ -924,10 +931,10 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Invitation accepted, RTC tokens generated, and notifications sent",
+      message:
+        "Invitation accepted, RTC tokens generated, and notifications sent",
       results, // Optional: to log or return the response from Firebase
     });
-
 
     return res.status(200).json({
       success: true,

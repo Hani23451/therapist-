@@ -8,7 +8,7 @@ const NotificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['sendLove', 'sentLove', 'error', 'success'], // Possible types of notifications
+    enum: ['sendLove', 'sentLove', 'error', 'success' ,"Invite Play"], // Possible types of notifications
     required: true
   },
   message: {
