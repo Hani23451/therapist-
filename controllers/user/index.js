@@ -896,7 +896,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           userToken: userTokenRtc,
           type: "allow_call",
         },
-        topic: `${userId}`,
+        topic: `66ba1e547fbf79d790c8c979`,
       },
       {
         notification: {
@@ -909,7 +909,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           userToken: partnerTokenRtc,
           type: "allow_call",
         },
-        topic: `${partnerId}`,
+        topic: `66ba1cf27fbf79d790c8c973`,
       },
     ];
 
