@@ -884,37 +884,38 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
 
     // Create Firebase messages
-    const messageUser =  {
-      notification: {
-        title: `السماح`,
-        body: `انقر للسماح باللعب`,
-        imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
+    const messages = [
+      {
+        notification: {
+          title: `السماح`,
+          body: `انقر للسماح باللعب`,
+          imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
+        },
+        data: {
+          channelName: channelName,
+          userToken: userTokenRtc,
+          type: "allow_call",
+        },
+        topic: `${userId}`,
       },
-      data: {
-        channelName: channelName,
-        userToken: userTokenRtc,
-        type: "allow_call",
+      {
+        notification: {
+          title: `السماح`,
+          body: `انقر للسماح باللعب`,
+          imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
+        },
+        data: {
+          channelName: channelName,
+          userToken: partnerTokenRtc,
+          type: "allow_call",
+        },
+        topic: `${partnerId}`,
       },
-      topic: `${userId}`,
-    };
+    ];
 
-    const messagePartner = {
-      notification: {
-        title: `السماح`,
-        body: `انقر للسماح باللعب`,
-        imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
-      },
-      data: {
-        channelName: channelName,
-        userToken: partnerTokenRtc,
-        type: "allow_call",
-      },
-      topic: `${partnerId}`,
-    };
-    await Promise.all([
-      admin.messaging().send(messagePartner),
-      admin.messaging().send(messageUser),
-    ]);
+    // Send all messages together
+    const response = await admin.messaging().sendAll(messages);
+
 
     return res.status(200).json({
       success: true,
