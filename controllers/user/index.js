@@ -794,7 +794,6 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
     const { gameId, model } = req.body;
     const userId = req.user.userId;
 
-  
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -864,7 +863,6 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
   try {
     const userId = req.user.userId;
 
-
     const user = await User.findById(userId);
     if (!user) {
       return res
@@ -907,9 +905,10 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
       },
       partnerId
     );
-
-    await admin.messaging().send(messageUser);
-    await admin.messaging().send(messagePartner);
+    await Promise.all([
+      admin.messaging().send(messagePartner),
+      admin.messaging().send(messageUser),
+    ]);
 
     return res.status(200).json({
       success: true,
