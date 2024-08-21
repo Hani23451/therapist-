@@ -858,7 +858,8 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
     const response = await admin.messaging().send(message);
 
     return res
-      .status(200)
+      .status(200) 
+       
       .json({ success: true, message: "Invitation sent successfully" });
   } catch (error) {
     console.error(error);
@@ -890,7 +891,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
 
     // Generate RTC tokens for both users
     const userTokenRtc = await RtcGenerateToken(channelName, userId); // Generate RTC Token for the user
-    const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
+    // const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
 
     // Create Firebase messages
     const messages = [
@@ -902,7 +903,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         },
         data: {
           channelName: channelName,
-          userToken: `${userTokenRtc}`,
+          userToken: userTokenRtc,
           type: "allow_call",
           model: `${model}`,
           gameId: `${gameId}`,
@@ -917,7 +918,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         },
         data: {
           channelName: channelName,
-          userToken: `${partnerTokenRtc}`,
+          userToken: userTokenRtc,
           type: "allow_call",
           model: `${model}`,
           gameId: `${gameId}`,
