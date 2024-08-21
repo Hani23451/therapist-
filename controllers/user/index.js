@@ -884,27 +884,33 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId); // Generate RTC Token for the partner
 
     // Create Firebase messages
-    const messageUser = fireBaseMessage(
-      "السماح",
-      "انقر للسماح باللعب",
-      {
+    const messageUser =  {
+      notification: {
+        title: `السماح`,
+        body: `انقر للسماح باللعب`,
+        imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
+      },
+      data: {
         channelName: channelName,
         userToken: userTokenRtc,
         type: "allow_call",
       },
-      userId
-    );
+      topic: `${userId}`,
+    };
 
-    const messagePartner = fireBaseMessage(
-      "السماح",
-      "انقر للسماح باللعب",
-      {
+    const messagePartner = {
+      notification: {
+        title: `السماح`,
+        body: `انقر للسماح باللعب`,
+        imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
+      },
+      data: {
         channelName: channelName,
         userToken: partnerTokenRtc,
         type: "allow_call",
       },
-      partnerId
-    );
+      topic: `${partnerId}`,
+    };
     await Promise.all([
       admin.messaging().send(messagePartner),
       admin.messaging().send(messageUser),
@@ -916,6 +922,6 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
