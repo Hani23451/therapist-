@@ -1,6 +1,11 @@
 const { RtcTokenBuilder, RtcRole } = require("agora-access-token");
-const RtcGenerateToken = async (channelName, uid) => {
-  let role = RtcRole.PUBLISHER;
+const RtcGenerateToken = async (channelName, uid, roleName) => {
+  let role;
+  if (roleName === "publisher") {
+    role = RtcRole.PUBLISHER;
+  } else if (roleName === "audience") {
+    role = RtcRole.SUBSCRIBER;
+  }
   const expireTime = 3600;
   const currentTime = Math.floor(Date.now() / 1000);
   const privilegeExpireTime = currentTime + expireTime;
