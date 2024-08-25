@@ -1,5 +1,5 @@
 const router = require("express").Router();
-
+const multer = require("multer");
 const {
   getAllGems,
   getAllQuestions,
@@ -26,9 +26,11 @@ const {
   getGame,
   sendPlayInvitation,
   acceptPlayInvitation,
+  uploadUserImage,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 /**
  * @swagger
  * /user/gems:
@@ -1283,4 +1285,91 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
 
 router.post("/accept-Invitation", verifyToken, acceptPlayInvitation);
 
+
+/**
+ * @swagger
+ * /api/user/upload-image:
+ *   post:
+ *     summary: Upload a user image
+ *     description: Uploads an image for the authenticated user and saves it to Cloudinary.
+ *     tags:
+ *       - User Image
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       description: Image file to be uploaded for the user.
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: The image file to be uploaded.
+ *             required:
+ *               - image
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Image uploaded successfully
+ *                 imageUrl:
+ *                   type: string
+ *                   example: https://res.cloudinary.com/your-cloud-name/image/upload/v1611111111/sample.jpg
+ *       400:
+ *         description: Bad Request - No image provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Please provide an image
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: User not found
+ *       500:
+ *         description: Server error or failed to upload image
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Server error
+ */
+
+
+router.post('/upload-image',verifyToken, upload.single('image'), uploadUserImage);
 module.exports = router;

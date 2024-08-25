@@ -18,6 +18,7 @@ const nodemailer = require("nodemailer");
 const shuffleArray = require("../../utils/shuffleArray");
 const RtcGenerateToken = require("../../utils/createRtcToken");
 const fireBaseMessage = require("../../utils/firebaseMessage");
+const bufferToStream = require("../../utils/ImageStream");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -858,8 +859,8 @@ exports.sendPlayInvitation = expressAsyncHandler(async (req, res) => {
     const response = await admin.messaging().send(message);
 
     return res
-      .status(200) 
-       
+      .status(200)
+
       .json({ success: true, message: "Invitation sent successfully" });
   } catch (error) {
     console.error(error);
@@ -889,10 +890,16 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     }
     const channelName = `${userId}_${partnerId}`;
 
-  
-    const userTokenRtc = await RtcGenerateToken(channelName, userId ,"audience"); 
-    const partnerTokenRtc = await RtcGenerateToken(channelName, partnerId ,"publisher"); 
-
+    const userTokenRtc = await RtcGenerateToken(
+      channelName,
+      userId,
+      "audience"
+    );
+    const partnerTokenRtc = await RtcGenerateToken(
+      channelName,
+      partnerId,
+      "publisher"
+    );
 
     const messages = [
       {
@@ -946,5 +953,60 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: error.message });
+  }
+});
+exports.uploadUserImage = expressAsyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "Please provide an image" });
+    }
+
+    // Uploading image to Cloudinary
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "image",
+        folder: "user_images",
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Error uploading image:", error);
+          return res.status(500).json({
+            success: false,
+            message: "Error uploading image",
+            error: error.message,
+          });
+        }
+
+        try {
+          user.image = result.secure_url;
+          await user.save(); // Await the save operation to ensure completion
+          return res.status(200).json({
+            success: true,
+            message: "Image uploaded successfully",
+            imageUrl: result.secure_url,
+          });
+        } catch (saveError) {
+          console.error("Error saving user:", saveError);
+          return res.status(500).json({
+            success: false,
+            message: "Error saving user image",
+            error: saveError.message,
+          });
+        }
+      }
+    );
+
+    // Convert the file buffer to a stream and pipe it to Cloudinary's upload stream
+    bufferToStream(req.file.buffer).pipe(stream);
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 });
