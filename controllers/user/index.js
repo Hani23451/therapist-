@@ -19,6 +19,7 @@ const shuffleArray = require("../../utils/shuffleArray");
 const RtcGenerateToken = require("../../utils/createRtcToken");
 const fireBaseMessage = require("../../utils/firebaseMessage");
 const bufferToStream = require("../../utils/ImageStream");
+const cloudinary = require("../../config/Cloudinary");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -447,21 +448,25 @@ exports.getUserData = expressAsyncHandler(async (req, res) => {
   try {
     // Fetch user data
     const user = await User.findById(req.user.userId);
-
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+    const partnerId = user.partner;
+    const partner = await User.findById(partnerId);
 
     // Fetch relationships involving the user, populating user details
     const relationships = await Relationship.findOne({
       $or: [{ user1: req.user.userId }, { user2: req.user.userId }],
     });
 
-    res
-      .status(200)
-      .json({ success: true, user, relationship: relationships || null });
+    res.status(200).json({
+      success: true,
+      user,
+      relationship: relationships || null,
+      partnerImage: partner.image || null,
+    });
   } catch (error) {
     res
       .status(500)
@@ -961,11 +966,15 @@ exports.uploadUserImage = expressAsyncHandler(async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     if (!req.file) {
-      return res.status(400).json({ success: false, message: "Please provide an image" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Please provide an image" });
     }
 
     // Uploading image to Cloudinary
@@ -1003,10 +1012,11 @@ exports.uploadUserImage = expressAsyncHandler(async (req, res) => {
       }
     );
 
-    // Convert the file buffer to a stream and pipe it to Cloudinary's upload stream
     bufferToStream(req.file.buffer).pipe(stream);
   } catch (error) {
     console.error("Unexpected error:", error);
-    res.status(500).json({ success: false, message: "Server error", error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 });
