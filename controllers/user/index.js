@@ -930,7 +930,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         },
         data: {
           channelName: channelName,
-          userToken: `${partnerTokenRtc}`,
+          userToken: partnerTokenRtc,
           type: "allow_call",
           model: `${model}`,
           gameId: `${gameId}`,
