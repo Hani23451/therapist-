@@ -920,7 +920,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           model: `${model}`,
           gameId: `${gameId}`,
         },
-        topic: `${userId}`,
+        topic: userId,
       },
       {
         notification: {
