@@ -25,11 +25,13 @@ app.use(
     },
   })
 );
-app.use(cors({
-  origin: '*', // or specify the origin: 'http://localhost:your-client-port'
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
+app.use(
+  cors({
+    origin: "*", // or specify the origin: 'http://localhost:your-client-port'
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 // Swagger setup
@@ -37,7 +39,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/user", require("./routes/user"));
+
+
 // ui
+
 app.use(require("./routes/ui/index"));
 app.use("/admin", require("./routes/admin/index"));
 

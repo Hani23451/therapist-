@@ -895,34 +895,10 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     }
     const channelName = `${userId}_${partnerId}`;
 
-    const userTokenRtc = await RtcGenerateToken(
-      channelName,
-      1,
-      "publisher"
-    );
-    const partnerTokenRtc = await RtcGenerateToken(
-      channelName,
-      0,
-      "publisher"
-    );
+    const userTokenRtc = await RtcGenerateToken(channelName, 1, "publisher");
+    const partnerTokenRtc = await RtcGenerateToken(channelName, 0, "publisher");
 
     const messages = [
-      {
-        notification: {
-          title: `السماح`,
-          body: `انقر للسماح باللعب`,
-          imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
-        },
-        data: {
-          channelName: channelName,
-          userToken: userTokenRtc,
-          type: "allow_call",
-          model: `${model}`,
-          gameId: `${gameId}`,
-        },
-        // 
-        topic: userId,
-      },
       {
         notification: {
           title: `السماح`,
@@ -936,7 +912,23 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           model: `${model}`,
           gameId: `${gameId}`,
         },
-        topic: partnerId,
+        topic: partner._id,
+      },
+      {
+        notification: {
+          title: `السماح`,
+          body: `انقر للسماح باللعب`,
+          imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
+        },
+        data: {
+          channelName: channelName,
+          userToken: userTokenRtc,
+          type: "allow_call",
+          model: `${model}`,
+          gameId: `${gameId}`,
+        },
+        //
+        topic: userId,
       },
     ];
 
@@ -950,11 +942,6 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
       message:
         "Invitation accepted, RTC tokens generated, and notifications sent",
       results, // Optional: to log or return the response from Firebase
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Invitation accepted and RTC tokens generated",
     });
   } catch (error) {
     console.error(error);
