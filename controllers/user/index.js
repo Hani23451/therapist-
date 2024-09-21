@@ -912,7 +912,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           model: `${model}`,
           gameId: `${gameId}`,
         },
-        topic: partnerId,
+        topic: "66ba1e547fbf79d790c8c979",
       },
       {
         notification: {
@@ -928,7 +928,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           gameId: `${gameId}`,
         },
         //
-        topic: partnerId,
+        topic: "66ba1e547fbf79d790c8c979",
       },
     ];
 
@@ -943,7 +943,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         "Invitation accepted, RTC tokens generated, and notifications sent",
       data: {
         id: partnerId,
-        user
+        user,
       },
       results, // Optional: to log or return the response from Firebase
     });
