@@ -943,6 +943,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
         "Invitation accepted, RTC tokens generated, and notifications sent",
       data: {
         id: partnerId,
+        user
       },
       results, // Optional: to log or return the response from Firebase
     });
