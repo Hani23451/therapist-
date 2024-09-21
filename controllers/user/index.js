@@ -928,7 +928,7 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           gameId: `${gameId}`,
         },
         //
-        topic: "66ba1e547fbf79d790c8c979",
+        topic: `${userId}`,
       },
     ];
 
