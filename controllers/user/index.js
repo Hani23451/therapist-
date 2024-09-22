@@ -914,9 +914,9 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
         },
         data: {
-          channelName: channelName,
-          userToken: partnerTokenRtc, 
-          id:user.partner ,
+          channelName: `${channelName}`,
+          userToken: `${partnerTokenRtc}`,
+          id: `1`,
           type: "allow_call",
           model: `${model}`,
           gameId: `${gameId}`,
@@ -930,11 +930,11 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
           imageUrl: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDKg1cDiIlTJXwUBjgqvzlOMSwHBYsFesGuA&s`,
         },
         data: {
-          channelName: channelName,
-          userToken: userTokenRtc,
+          channelName: `${channelName}`,
+          userToken: `${userTokenRtc}`,
           type: "allow_call",
           model: `${model}`,
-          id:userId ,
+          id: "0",
           gameId: `${gameId}`,
         },
         //
