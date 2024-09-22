@@ -897,12 +897,12 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
 
     const userTokenRtc = await RtcGenerateToken(
       channelName,
-      userId,
+      0,
       "publisher"
     );
     const partnerTokenRtc = await RtcGenerateToken(
       channelName,
-      partnerId,
+      1,
       "publisher"
     );
 
