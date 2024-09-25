@@ -27,6 +27,8 @@ const {
   sendPlayInvitation,
   acceptPlayInvitation,
   uploadUserImage,
+  subscribeService,
+  getSubscriptions,
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 const storage = multer.memoryStorage();
@@ -1285,7 +1287,6 @@ router.post("/game-Invitation", verifyToken, sendPlayInvitation);
 
 router.post("/accept-Invitation", verifyToken, acceptPlayInvitation);
 
-
 /**
  * @swagger
  * /api/user/upload-image:
@@ -1370,6 +1371,176 @@ router.post("/accept-Invitation", verifyToken, acceptPlayInvitation);
  *                   example: Server error
  */
 
+router.post(
+  "/upload-image",
+  verifyToken,
+  upload.single("image"),
+  uploadUserImage
+);
 
-router.post('/upload-image',verifyToken, upload.single('image'), uploadUserImage);
+/**
+ * @swagger
+ * /api/user/subscribe-service:
+ *   post:
+ *     summary: Subscribe to a service (game, story, or experience)
+ *     description: Allows a user to subscribe to a service by deducting gems from their account. The service could be a game, story, or experience.
+ *     tags:
+ *       - Subscribe
+ *     security:
+ *       - bearerAuth: []  # Assuming bearer token authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - gems
+ *               - serviceId
+ *               - type
+ *             properties:
+ *               gems:
+ *                 type: integer
+ *                 description: The number of gems to spend on the subscription
+ *                 example: 50
+ *               serviceId:
+ *                 type: string
+ *                 description: The ID of the service (game, story, or experience)
+ *                 example: "60d21b4667d0d8992e610c85"
+ *               type:
+ *                 type: string
+ *                 description: The type of service to subscribe to (game, story, or experience)
+ *                 enum: [game, story, experience]
+ *                 example: "game"
+ *     responses:
+ *       200:
+ *         description: Successfully subscribed to the service
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully subscribed to the game"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: "60d21b4667d0d8992e610c85"
+ *                     gemsCount:
+ *                       type: integer
+ *                       description: The remaining number of gems the user has
+ *                       example: 100
+ *       400:
+ *         description: Bad request (missing fields or invalid type)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Missing required fields: gems, serviceId, or type"
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *       200_insufficient_gems:
+ *         description: Insufficient gems
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Insufficient gems"
+ */
+
+router.post("/subscribe-service", verifyToken, subscribeService);
+
+/**
+ * @swagger
+ * /api/user/get-subscriptions:
+ *   get:
+ *     summary: Get user subscriptions
+ *     description: Fetches the subscriptions of the logged-in user, including games, stories, and experiences.
+ *     tags:
+ *       - Subscribe
+ *     security:
+ *       - bearerAuth: []  # Assuming you use Bearer token for authentication
+ *     responses:
+ *       200:
+ *         description: Successfully fetched user subscriptions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Subscriptions fetched successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: "60d21b4667d0d8992e610c85"
+ *                     gemsCount:
+ *                       type: integer
+ *                       example: 150
+ *                     GamesSubscriptions:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["60d21b4667d0d8992e610c85", "60d21b4667d0d8992e610c86"]
+ *                     storiesSubscriptions:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["60d21b4667d0d8992e610c87"]
+ *                     experienceSubscriptions:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["60d21b4667d0d8992e610c88"]
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error fetching subscriptions"
+ */
+router.get("/get-subscriptions", verifyToken, getSubscriptions);
 module.exports = router;

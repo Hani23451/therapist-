@@ -895,16 +895,8 @@ exports.acceptPlayInvitation = expressAsyncHandler(async (req, res) => {
     }
     const channelName = `${userId}_${partnerId}`;
 
-    const userTokenRtc = await RtcGenerateToken(
-      channelName,
-      0,
-      "publisher"
-    );
-    const partnerTokenRtc = await RtcGenerateToken(
-      channelName,
-      1,
-      "publisher"
-    );
+    const userTokenRtc = await RtcGenerateToken(channelName, 0, "publisher");
+    const partnerTokenRtc = await RtcGenerateToken(channelName, 1, "publisher");
 
     const messages = [
       {
@@ -1021,4 +1013,88 @@ exports.uploadUserImage = expressAsyncHandler(async (req, res) => {
       .status(500)
       .json({ success: false, message: "Server error", error: error.message });
   }
+});
+
+exports.subscribeService = expressAsyncHandler(async (req, res) => {
+  const { gems, serviceId, type } = req.body;
+  const userId = req.user.userId;
+
+  if (!gems || !serviceId || !type) {
+    return res
+      .status(400)
+      .json({ message: "Missing required fields: gems, serviceId, or type" });
+  }
+
+  // Validate that the type is correct
+  if (!["game", "story", "experience"].includes(type)) {
+    return res.status(400).json({
+      message: "Invalid type. Must be one of 'game', 'story', or 'experience'.",
+    });
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Check if the user has enough gems
+  if (user.gemsCount < gems) {
+    return res
+      .status(200)
+      .json({ status: false, message: "Insufficient gems" });
+  }
+
+  let service;
+
+  // Handle subscription based on the type
+  switch (type) {
+    case "game":
+      user.GamesSubscriptions.push(serviceId);
+      break;
+
+    case "story":
+      user.storiesSubscriptions.push(serviceId);
+      break;
+
+    case "experience":
+      user.experienceSubscriptions.push(serviceId);
+      break;
+
+    default:
+      return res.status(400).json({ message: "Invalid type" });
+  }
+
+  // Deduct the gems
+  user.gemsCount -= gems;
+
+  // Save the updated user
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: `Successfully subscribed to the ${type}`,
+    user: {
+      _id: user._id,
+      gemsCount: user.gemsCount,
+    },
+  });
+});
+
+exports.getSubscriptions = expressAsyncHandler(async (req, res) => {
+  const userId = req.user.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.status(200).json({
+    success: true,
+    message: "Subscriptions fetched successfully",
+    data: {
+      _id: user._id,
+      gemsCount: user.gemsCount,
+      GamesSubscriptions: user.GamesSubscriptions,
+      storiesSubscriptions: user.storiesSubscriptions,
+      experienceSubscriptions: user.experienceSubscriptions,
+    },
+  });
 });

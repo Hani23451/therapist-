@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema(
-  { 
-    image:{ 
-      type:String ,
-      default:''
-
-    } ,
+  {
+    image: {
+      type: String,
+      default: "",
+    },
     fullname: {
       type: String,
       required: true,
@@ -33,6 +32,15 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    storiesSubscriptions: [
+
+    ],
+    experienceSubscriptions: [
+
+    ],
+    GamesSubscriptions: [
+
+    ],
 
     relationshipStatus: {
       type: String,
@@ -57,5 +65,6 @@ const UserSchema = new mongoose.Schema(
     timestamps: true, // Automatically adds createdAt and updatedAt fields
   }
 );
+ 
 
 module.exports = mongoose.model("User", UserSchema);
