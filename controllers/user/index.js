@@ -1098,3 +1098,19 @@ exports.getSubscriptions = expressAsyncHandler(async (req, res) => {
     },
   });
 });
+exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
+  try {
+    const body = req.body;
+    console.log(body);
+    console.log(
+      "############################################################################### pament database################################"
+    );
+
+    res.status(200).send("sucess");
+  } catch (e) {
+    console.log(e);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: e.message });
+  }
+});

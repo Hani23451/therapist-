@@ -29,6 +29,7 @@ const {
   uploadUserImage,
   subscribeService,
   getSubscriptions,
+  paymentCallBackProcess
 } = require("../../controllers/user/index");
 const verifyToken = require("../../middlewares/verifyToken");
 const storage = multer.memoryStorage();
@@ -1543,4 +1544,22 @@ router.post("/subscribe-service", verifyToken, subscribeService);
  *                   example: "Error fetching subscriptions"
  */
 router.get("/get-subscriptions", verifyToken, getSubscriptions);
+
+
+
+/**
+ * @swagger
+ * /api/user/get-paymob-callback-process:
+ *   post:
+ *     summary: Get call back from paymob
+ *     description: Fetches the subscriptions of the logged-in user, including games, stories, and experiences.
+ *     tags:
+ *       - Paymob
+ *     security:
+ *       - bearerAuth: []  # Assuming you use Bearer token for authentication
+ *     responses:
+ *       200:
+
+ */
+router.post("/get-paymob-callback-process", paymentCallBackProcess);
 module.exports = router;
