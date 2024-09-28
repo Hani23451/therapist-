@@ -1115,6 +1115,10 @@ exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
     console.log(body.amount_cents);
     console.log(body.user_id);
     console.log(body.is_bill);
+    const shippings = body.order.shipping_data;
+    const items = body.order.items;
+    console.log(shippings);
+    console.log(items);
 
     res.status(200).send("sucess");
   } catch (e) {
