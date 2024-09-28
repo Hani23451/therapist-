@@ -1111,10 +1111,8 @@ exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
     console.log(
       "############################################################################### pament database################################"
     );
-    console.log(
-      req.body.shipping_data[0] +
-        " #######################################################################################"
-    );
+    console.log(body.items);
+    console.log(body.billing_data);
 
     res.status(200).send("sucess");
   } catch (e) {
