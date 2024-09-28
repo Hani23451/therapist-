@@ -1112,8 +1112,8 @@ exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
     console.log(
       "############################################################################### pament database################################"
     );
-    console.log(JSON.parse(body.billing_data));
-    console.log(JSON.parse(body.items));
+    console.log(body.amount_cents);
+    console.log(body.user_id);
     console.log(body.is_bill);
 
     res.status(200).send("sucess");
