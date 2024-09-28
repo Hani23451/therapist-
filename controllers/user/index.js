@@ -734,7 +734,14 @@ exports.getRelationship = expressAsyncHandler(async (req, res) => {
     }
 
     relationship = relationship;
-    res.status(200).json({ success: true, data: relationship });
+    res.status(200).json({
+      success: true,
+      data: {
+        ...relationship,
+        userImage: user.image ?? "",
+        partnerImage: partner.image ?? "",
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "حدث خطأ في الخادم" });
