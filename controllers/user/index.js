@@ -1101,7 +1101,7 @@ exports.getSubscriptions = expressAsyncHandler(async (req, res) => {
 });
 exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
   try {
-    const body = req.body;
+    const body = req.body.obj;
     console.log(body);
     console.log(
       "############################################################################### pament database################################"
