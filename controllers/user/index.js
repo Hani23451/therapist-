@@ -1102,23 +1102,21 @@ exports.getSubscriptions = expressAsyncHandler(async (req, res) => {
 exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
   try {
     const body = req.body.obj;
-    console.log(body);
+    const email = body.order.shipping_data.last_name;
+    const gemsCount = body.order.items[0].description;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    user.gemsCount += parseInt(gemsCount);
+    await user.save();
     console.log(
-      "############################################################################### pament database################################"
+      "############################################################################################"
     );
-    console.log(
-      "############################################################################### pament database################################"
-    );
-    console.log(
-      "############################################################################### pament database################################"
-    );
-    console.log(body.amount_cents);
-    console.log(body.user_id);
-    console.log(body.is_bill);
-    const shippings = body.order.shipping_data;
-    const items = body.order.items;
-    console.log(shippings);
-    console.log(items);
+    console.log(user);
 
     res.status(200).send("sucess");
   } catch (e) {
