@@ -20,6 +20,7 @@ const RtcGenerateToken = require("../../utils/createRtcToken");
 const fireBaseMessage = require("../../utils/firebaseMessage");
 const bufferToStream = require("../../utils/ImageStream");
 const cloudinary = require("../../config/Cloudinary");
+const { json } = require("express");
 // Controller function to get all gems and render the page
 exports.getAllGems = expressAsyncHandler(async (req, res) => {
   try {
@@ -1111,8 +1112,9 @@ exports.paymentCallBackProcess = expressAsyncHandler(async (req, res) => {
     console.log(
       "############################################################################### pament database################################"
     );
-    console.log(body.items);
-    console.log(body.billing_data);
+    console.log(JSON.parse(body.billing_data));
+    console.log(JSON.parse(body.items));
+    console.log(body.is_bill);
 
     res.status(200).send("sucess");
   } catch (e) {
