@@ -12,6 +12,8 @@ const bufferToStream = require("../../utils/ImageStream");
 const GameModelTwo = require("../../models/GameModelTwo");
 const GameModelThree = require("../../models/GameModelThree");
 const GameModelOne = require("../../models/GameModelOne");
+const TherapistProvider = require("../../models/TherapistProvider"); 
+const bcrypt = require("bcrypt");
 exports.AdminLogin = asyncHandler(async (req, res, next) => {
   console.log(req.body);
   const { email, password } = req.body;
@@ -375,7 +377,6 @@ exports.uploadQuestion = asyncHandler(async (req, res) => {
   }
 });
 
-
 exports.createGameModelTow = asyncHandler(async (req, res) => {
   try {
     // Parse the form data, including file and other fields
@@ -632,3 +633,35 @@ exports.DeleteItemModelOne = asyncHandler(async (req, res) => {
       .json({ message: "Error processing request", error: error.message });
   }
 });
+
+// teachers
+
+exports.createTherapistProviderServices = asyncHandler(async (req, res) => {
+  try {
+    const { name, email, consultant, password } = req.body;
+
+    // Check if password is provided
+    
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+
+    const therapistProvider = await TherapistProvider.create({
+      name,
+      email,
+      type: consultant === "on" ? "consultant" : "teacher",
+      password: hashedPassword, // Store the hashed password
+    }); 
+
+    console.log(therapistProvider);
+
+    return res.render("pages/add_teachers", {
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error processing request:", error);
+    return res.status(500).render("pages/add_teachers", {
+      error: "Error processing request",
+    });
+  }
+})

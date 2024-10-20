@@ -20,6 +20,7 @@ const {
   DeleteItemModelThree,
   createGameModelOne,
   DeleteItemModelOne,
+  createTherapistProviderServices,
 } = require("../../controllers/admin/index");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -78,4 +79,11 @@ router.post(
 
   DeleteItemModelOne
 );
+
+router.post(
+  "/create-therapistProvider",
+
+  createTherapistProviderServices
+);
+createTherapistProviderServices;
 module.exports = router;

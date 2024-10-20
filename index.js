@@ -36,16 +36,12 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 // Swagger setup
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/user", require("./routes/user"));
- 
-
-// start courses
-
-// ui
 
 app.use(require("./routes/ui/index"));
+app.use("/provider", require("./routes/ui/providers"));
+app.use("/provider", require("./routes/provider/index"));
 app.use("/admin", require("./routes/admin/index"));
 
 DB.then((con) => {

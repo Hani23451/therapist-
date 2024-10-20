@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Sign in as a Therapist Services Provider. Add your services, courses, and consultants effortlessly. Join us today!"
+    />
+    <link href="../css/main.css" rel="stylesheet" />
+    <title>Sign in as a Therapist Services Provider - Thaerapist</title>
+  </head>
+  <body class="body bg-white dark:bg-[#0F172A]">
+    <div
+      class="bg-black before:animate-pulse before:bg-gradient-to-b before:from-gray-900 overflow-hidden before:via-[#00FF00] before:to-gray-900 before:absolute"
+    >
+      <div id="myDIV">
+        <div
+          class="w-[100vw] h-[100vh] px-3 sm:px-5 flex items-center justify-center absolute"
+        >
+          <div
+            class="w-full sm:w-1/2 lg:2/3 px-6 bg-gray-500 bg-opacity-20 bg-clip-padding backdrop-filter backdrop-blur-sm text-white z-50 py-4 rounded-lg"
+          >
+            <div class="mb-12 rounded-lg shadow-md text-center">
+              <p class="text-lg font-semibold mb-2">
+                Sign as
+                <span class="text-xl font-bold"
+                  >Therapist Services Provider</span
+                >
+              </p>
+              <p class="font-thin">
+                You will be able to add your
+                <span class="text-teal-600 font-semibold">Services</span>,
+                <span class="text-teal-600 font-semibold">Courses</span>, and
+                <span class="text-teal-600 font-semibold">Consultants</span>.
+              </p>
+            </div>
+            <div
+              class="w-full flex justify-center text-[#00FF00] text-xl mb:2 md:mb-5"
+            >
+              Sign In
+            </div>
+            <form action="/provider/create-provider" method="POST">
+              <div class="mb-6">
+                <label
+                  for="email"
+                  class="block mb-2 text-xs font-medium text-white"
+                  >Your email</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="name@neurolink.com"
+                  required
+                />
+              </div>
+              <div class="mb-6">
+                <label
+                  for="password"
+                  class="block mb-2 text-xs font-medium text-white"
+                  >Your password</label
+                >
+                <input 
+                name="password"
+                  type="password"
+                  id="password"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="mt-4 md:mt-10 w-full text-slate-700 flex justify-center text-sm md:text-xl bg-teal-600 py-2 rounded-md"
+              >
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const para = document.createElement("div");
+    para.className =
+      "flex flex-wrap gap-0.5 h-screen items-center justify-center  relative";
+    let el =
+      '<div class = "  transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-[#00FF00]"></div>';
+    for (var k = 1; k <= 1000; k++) {
+      el +=
+        '<div class = " transition-colors duration-[1.5s] hover:duration-[0s] border-[#00FF00] h-[calc(5vw-2px)] w-[calc(5vw-2px)] md:h-[calc(4vw-2px)] md:w-[calc(4vw-2px)] lg:h-[calc(3vw-4px)] lg:w-[calc(3vw-4px)] bg-gray-900 hover:bg-red-100"></div>';
+    }
+
+    para.innerHTML = el;
+    document.getElementById("myDIV").appendChild(para);
+  </script>
+</html>

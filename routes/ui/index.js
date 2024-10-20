@@ -158,7 +158,21 @@ router.get("/games/model_four", async (req, res) => {
     console.error(error);
     res.status(500).send("Server Error");
   }
-});
+}); 
+router.get("/add_teachers", async (req, res) => {
+  try {
+    // Fetch users from the database
+
+    res.render("pages/add_teachers"); // Pass users data to the EJS template
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+}); 
+
+
+// providers 
+
 
 
 module.exports = router;
